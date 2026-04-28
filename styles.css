@@ -177,7 +177,22 @@ body {
   transition:color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .nav-links a:hover { color:var(--ink); background:var(--ink-05); }
-.nav-links a.active { color:var(--ink); font-weight:700; }
+.nav-links a.active {
+  color:var(--accent);
+  font-weight:700;
+  background:var(--accent-xlight);
+  position:relative;
+}
+.nav-links a.active::after {
+  content:'';
+  position:absolute;
+  bottom:2px;
+  left:50%;
+  transform:translateX(-50%);
+  width:4px; height:4px;
+  border-radius:50%;
+  background:var(--accent);
+}
 
 .nav-cta-btn {
   display:inline-flex;
