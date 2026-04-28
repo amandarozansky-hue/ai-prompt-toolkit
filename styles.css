@@ -832,6 +832,35 @@ body {
 .empty-state h3 { font-size:1rem; color:var(--ink-60); margin-bottom:.4rem; }
 .empty-state p { font-size:.85rem; color:var(--ink-40); }
 
+/* View more / less row */
+.view-more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.view-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .65rem 1.5rem;
+  border: 1.5px solid var(--ink-10);
+  border-radius: 100px;
+  background: var(--white);
+  color: var(--ink-60);
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  box-shadow: var(--shadow-xs);
+}
+.view-more-btn:hover {
+  border-color: var(--ink-20);
+  color: var(--ink);
+  background: var(--ink-05);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 /* ── Coming-soon tile ────────────────────────────────────────── */
 .coming-soon-tile {
   grid-column: 1 / -1;
@@ -1878,6 +1907,7 @@ footer {
 .btn-card-save svg { width: 13px; height: 13px; }
 .btn-card-save:hover { color: var(--accent); border-color: var(--accent-light); background: var(--accent-xlight); }
 .btn-card-save.saved { color: var(--accent); background: var(--accent-xlight); border-color: var(--accent-light); }
+.btn-card-save.saved svg { fill: var(--accent); }
 
 /* ─── Save button in modal ─────────────────────────────── */
 .modal-btn-save {
@@ -1898,6 +1928,7 @@ footer {
 }
 .modal-btn-save:hover { background: var(--accent-xlight); color: var(--accent); border-color: var(--accent-light); }
 .modal-btn-save svg { width: 15px; height: 15px; }
+.modal-btn-saved { background: var(--accent-xlight); color: var(--accent); border-color: var(--accent-light); font-weight: 700; }
 
 /* ─── Responsive ───────────────────────────────────────── */
 @media (max-width: 760px) {

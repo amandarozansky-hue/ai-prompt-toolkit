@@ -1,5 +1,6 @@
 // ─── STATE ────────────────────────────────────────────────────────────────
-const state = { dept: 'all', cat: 'all', search: '' };
+const state = { dept: 'all', cat: 'all', search: '', showAll: false };
+const PAGE_SIZE = 6;
 
 // ─── INLINE SVG ICONS ────────────────────────────────────────────────────
 const ICONS = {
@@ -17,7 +18,8 @@ const ICONS = {
   x:          `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
   arrow:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
   star:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-  bookmark:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+  bookmark:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+  'bookmark-fill': `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
   sparkle:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>`,
 };
 
@@ -95,9 +97,10 @@ function renderCatPills() {
 
 // ─── RENDER: PROMPT GRID ─────────────────────────────────────────────────
 function renderGrid() {
-  const list = filtered();
-  const grid = document.getElementById('prompt-grid');
-  const count = document.getElementById('prompt-count');
+  const list    = filtered();
+  const grid    = document.getElementById('prompt-grid');
+  const count   = document.getElementById('prompt-count');
+  const moreRow = document.getElementById('view-more-row');
 
   count.textContent = `${list.length} prompt${list.length !== 1 ? 's' : ''}`;
 
@@ -108,19 +111,23 @@ function renderGrid() {
         <h3>No prompts match your filters</h3>
         <p>Try a different department, category, or search term.</p>
       </div>`;
+    if (moreRow) moreRow.style.display = 'none';
     return;
   }
 
-  const cards = list.map((p, i) => {
-    const catName  = CATEGORIES.find(c => c.id === p.category)?.name || '';
-    const labels   = p.labels.map(labelHTML).join('');
-    const preview  = p.prompt.replace(/\n/g,' ').slice(0, 130) + '…';
-    const impact   = p.useCase ? `
+  const visible = state.showAll ? list : list.slice(0, PAGE_SIZE);
+  const hidden  = list.length - visible.length;
+
+  const buildCard = (p, i) => {
+    const catName   = CATEGORIES.find(c => c.id === p.category)?.name || '';
+    const labels    = p.labels.map(labelHTML).join('');
+    const preview   = p.prompt.replace(/\n/g,' ').slice(0, 130) + '…';
+    const isSaved   = typeof isPromptSaved === 'function' && isPromptSaved(p.id);
+    const impact    = p.useCase ? `
       <div class="card-impact">
         ${ICONS.star}
         <span>${p.useCase.team} &mdash; ${p.useCase.result}</span>
       </div>` : '';
-
     return `
       <div class="prompt-card" style="animation-delay:${i * 25}ms">
         <div class="card-header">
@@ -137,22 +144,21 @@ function renderGrid() {
           <button class="btn-card-copy" data-id="${p.id}" onclick="handleCardCopy(event,${p.id})">
             ${ICONS.copy} Copy Prompt
           </button>
-          <button class="btn-card-save" data-save-id="${p.id}" onclick="saveFromCatalogue(${p.id})" title="Save prompt">
-            ${ICONS.bookmark}
+          <button class="btn-card-save${isSaved ? ' saved' : ''}" data-save-id="${p.id}" onclick="saveFromCatalogue(${p.id})" title="${isSaved ? 'Unsave' : 'Save prompt'}">
+            ${isSaved ? ICONS['bookmark-fill'] : ICONS.bookmark}
           </button>
           <button class="btn-card-view" onclick="openModal(${p.id})">
             ${ICONS.eye} View
           </button>
         </div>
       </div>`;
-  }).join('');
+  };
 
   const comingSoon = state.dept !== 'all' ? `
     <div class="coming-soon-tile">
       <div class="coming-soon-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 16 14"/>
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
       </div>
       <div class="coming-soon-body">
@@ -162,8 +168,38 @@ function renderGrid() {
       <div class="coming-soon-badge">In progress</div>
     </div>` : '';
 
-  grid.innerHTML = cards + comingSoon;
+  grid.innerHTML = visible.map(buildCard).join('') + comingSoon;
+
+  // View more / less row
+  if (moreRow) {
+    if (list.length <= PAGE_SIZE) {
+      moreRow.style.display = 'none';
+    } else {
+      moreRow.style.display = 'flex';
+      moreRow.innerHTML = state.showAll
+        ? `<button class="view-more-btn" onclick="toggleShowAll(false)">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg>
+             View less
+           </button>`
+        : `<button class="view-more-btn" onclick="toggleShowAll(true)">
+             View ${hidden} more prompt${hidden !== 1 ? 's' : ''}
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+           </button>`;
+    }
+  }
 }
+
+function toggleShowAll(show) {
+  state.showAll = show;
+  renderGrid();
+  if (!show) {
+    document.getElementById('catalogue')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// reset showAll when filters change so you always start fresh
+function setDeptAndReset(id) { state.showAll = false; setDept(id); }
+function setCatAndReset(id)  { state.showAll = false; setCat(id);  }
 
 // ─── COPY FROM CARD ──────────────────────────────────────────────────────
 function handleCardCopy(e, id) {
@@ -227,8 +263,8 @@ function buildStandardModal(p, id) {
           <button class="modal-btn-copy" id="modal-copy-btn" onclick="handleModalCopy(${id})">
             ${ICONS.copy} Copy Prompt
           </button>
-          <button class="modal-btn-save" onclick="saveFromCatalogue(${id})">
-            ${ICONS.bookmark} Save
+          <button class="modal-btn-save${typeof isPromptSaved === 'function' && isPromptSaved(id) ? ' modal-btn-saved' : ''}" id="modal-save-btn" data-prompt-id="${id}" onclick="saveFromCatalogue(${id});updateModalSaveState(${id})">
+            ${typeof isPromptSaved === 'function' && isPromptSaved(id) ? ICONS['bookmark-fill'] + ' Saved' : ICONS.bookmark + ' Save'}
           </button>
         </div>
       </div>
@@ -371,6 +407,14 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+function updateModalSaveState(id) {
+  const btn = document.getElementById('modal-save-btn');
+  if (!btn) return;
+  const saved = typeof isPromptSaved === 'function' && isPromptSaved(id);
+  btn.className = 'modal-btn-save' + (saved ? ' modal-btn-saved' : '');
+  btn.innerHTML = saved ? `${ICONS['bookmark-fill']} Saved` : `${ICONS.bookmark} Save`;
+}
+
 function handleModalCopy(id) {
   const p   = PROMPTS.find(x => x.id === id);
   const btn = document.getElementById('modal-copy-btn');
@@ -379,13 +423,15 @@ function handleModalCopy(id) {
 
 // ─── FILTERS ─────────────────────────────────────────────────────────────
 function setDept(id) {
-  state.dept = id;
+  state.dept    = id;
+  state.showAll = false;
   renderDeptTabs();
   renderGrid();
 }
 
 function setCat(id) {
-  state.cat = id;
+  state.cat     = id;
+  state.showAll = false;
   renderCatPills();
   renderGrid();
 }
@@ -454,7 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Search
   document.getElementById('search-input').addEventListener('input', e => {
-    state.search = e.target.value;
+    state.search  = e.target.value;
+    state.showAll = false;
     renderGrid();
   });
 

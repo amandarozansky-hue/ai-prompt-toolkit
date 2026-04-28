@@ -9,14 +9,26 @@ function setSaved(arr) {
   localStorage.setItem(SAVED_KEY, JSON.stringify(arr));
   _updateSavedBadge();
 }
-function savePrompt(title, text, source) {
+function isPromptSaved(sourceId) {
+  return getSaved().some(p => p.source === 'catalogue' && p.sourceId === sourceId);
+}
+
+function savePrompt(title, text, source, sourceId = null) {
   const arr = getSaved();
-  arr.unshift({ id: Date.now(), title, text, source, savedAt: Date.now() });
+  if (source === 'catalogue' && arr.some(p => p.source === 'catalogue' && p.sourceId === sourceId)) return;
+  arr.unshift({ id: Date.now(), title, text, source, sourceId, savedAt: Date.now() });
   setSaved(arr);
   if (document.getElementById('tool-saved')?.classList.contains('active')) renderSavedPanel();
 }
-function deleteSaved(id) {
-  setSaved(getSaved().filter(p => p.id !== id));
+
+function deleteSaved(savedId) {
+  const record = getSaved().find(p => p.id === savedId);
+  setSaved(getSaved().filter(p => p.id !== savedId));
+  // reset bookmark on the visible card if it was a catalogue prompt
+  if (record?.source === 'catalogue' && record?.sourceId) {
+    const btn = document.querySelector(`[data-save-id="${record.sourceId}"]`);
+    if (btn) { btn.classList.remove('saved'); btn.innerHTML = ICONS.bookmark; btn.title = 'Save prompt'; }
+  }
   renderSavedPanel();
 }
 function _updateSavedBadge() {
@@ -30,13 +42,17 @@ function _updateSavedBadge() {
 function saveFromCatalogue(promptId) {
   const p = PROMPTS.find(x => x.id === promptId);
   if (!p) return;
-  savePrompt(p.title, p.prompt, 'catalogue');
   const btn = document.querySelector(`[data-save-id="${promptId}"]`);
-  if (btn) {
-    btn.classList.add('saved');
-    const orig = btn.innerHTML;
-    btn.innerHTML = ICONS.check;
-    setTimeout(() => { btn.classList.remove('saved'); btn.innerHTML = orig; }, 2200);
+
+  if (isPromptSaved(promptId)) {
+    // unsave
+    const record = getSaved().find(s => s.source === 'catalogue' && s.sourceId === promptId);
+    if (record) deleteSaved(record.id);
+    if (btn) { btn.classList.remove('saved'); btn.innerHTML = ICONS.bookmark; btn.title = 'Save prompt'; }
+  } else {
+    // save
+    savePrompt(p.title, p.prompt, 'catalogue', promptId);
+    if (btn) { btn.classList.add('saved'); btn.innerHTML = ICONS['bookmark-fill']; btn.title = 'Unsave'; }
   }
 }
 
@@ -401,7 +417,7 @@ function renderSavedPanel() {
             <div class="saved-card-preview">${esc(preview)}</div>
             <div class="saved-card-actions">
               <button class="btn-card-copy" onclick="copySavedItem(this, ${p.id})">${ICONS.copy} Copy</button>
-              <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.x} Delete</button>
+              <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.bookmark} Unsave</button>
             </div>
           </div>`;
       }).join('')}
