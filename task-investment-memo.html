@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investment Memo Draft — Task Detail · AI Toolkit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Page-specific tokens ─────────────────────────── */
+    .demo-banner {
+      background: var(--amber-light);
+      border-bottom: 1px solid #f0c040;
+      padding: .6rem 2rem;
+      text-align: center;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--amber);
+      letter-spacing: .02em;
+    }
+    .demo-banner strong { font-weight: 800; }
+
+    /* ── Slim nav for detail page ─────────────────────── */
+    .detail-nav {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      border-bottom: 1px solid var(--ink-10);
+      background: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .detail-nav-back {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--ink-60);
+      transition: color var(--dur) var(--ease);
+    }
+    .detail-nav-back:hover { color: var(--ink); }
+    .detail-nav-back svg { width: 14px; height: 14px; }
+    .detail-nav-logo {
+      font-size: .85rem;
+      font-weight: 800;
+      color: var(--ink-40);
+      letter-spacing: -.01em;
+    }
+
+    /* ── Page hero ────────────────────────────────────── */
+    .task-hero {
+      background: var(--ink);
+      padding: 3.5rem 0 3rem;
+    }
+    .task-hero-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .task-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      margin-bottom: 1rem;
+    }
+    .task-breadcrumb-sep { opacity: .4; }
+    .task-hero h1 {
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -.03em;
+      margin-bottom: 1.25rem;
+      line-height: 1.15;
+    }
+    .task-hero-meta {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .3rem .7rem;
+      border-radius: 999px;
+      letter-spacing: .03em;
+    }
+    .meta-pill svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .meta-dept   { background: rgba(255,255,255,.1);  color: rgba(255,255,255,.75); }
+    .meta-tool   { background: var(--blue-light);     color: var(--blue); }
+    .meta-time   { background: rgba(26,122,94,.25);   color: #6edcb8; }
+    .meta-sample { background: var(--amber-light);    color: var(--amber); }
+
+    /* ── Main two-column layout ───────────────────────── */
+    .task-body {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .task-col { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ── Section cards ────────────────────────────────── */
+    .task-card {
+      background: var(--white);
+      border: 1.5px solid var(--ink-10);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .task-card-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--ink-10);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .task-card-header-icon {
+      width: 28px; height: 28px;
+      border-radius: var(--r-xs);
+      background: var(--ink-05);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .task-card-header-icon svg { width: 14px; height: 14px; color: var(--ink-60); }
+    .task-card-title {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--ink-60);
+    }
+    .task-card-body { padding: 1.5rem; }
+
+    /* ── Prompt box ───────────────────────────────────── */
+    .prompt-box {
+      background: var(--ink-05);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--r);
+      padding: 1.25rem;
+      font-size: .82rem;
+      line-height: 1.75;
+      color: var(--ink-80);
+      font-family: 'Inter', monospace;
+      white-space: pre-wrap;
+      position: relative;
+    }
+    .prompt-placeholder {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .copy-prompt-btn {
+      position: absolute;
+      top: .75rem;
+      right: .75rem;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .3rem .65rem;
+      border-radius: var(--r-xs);
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      color: var(--ink-60);
+      cursor: pointer;
+      transition: all var(--dur) var(--ease);
+    }
+    .copy-prompt-btn:hover { border-color: var(--ink-40); color: var(--ink); }
+    .copy-prompt-btn svg { width: 11px; height: 11px; }
+    .copy-prompt-btn.copied { background: var(--accent-xlight); border-color: var(--accent-light); color: var(--accent); }
+
+    /* ── When to use ──────────────────────────────────── */
+    .when-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+    .when-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      font-size: .875rem;
+      color: var(--ink-80);
+      line-height: 1.5;
+    }
+    .when-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: .45rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Tips ─────────────────────────────────────────── */
+    .tips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .tip-item {
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+    }
+    .tip-num {
+      min-width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent-xlight);
+      color: var(--accent);
+      font-size: .7rem;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+    .tip-text {
+      font-size: .875rem;
+      color: var(--ink-80);
+      line-height: 1.55;
+    }
+    .tip-text strong { color: var(--ink); font-weight: 700; }
+
+    /* ── Example output ───────────────────────────────── */
+    .output-card {
+      background: var(--white);
+      border: 1.5px solid var(--ink-10);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      position: sticky;
+      top: 72px;
+    }
+    .output-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--ink-10);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .output-header-left {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .output-header-icon {
+      width: 28px; height: 28px;
+      border-radius: var(--r-xs);
+      background: var(--ink-05);
+      display: grid;
+      place-items: center;
+    }
+    .output-header-icon svg { width: 14px; height: 14px; color: var(--ink-60); }
+    .output-header-title {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--ink-60);
+    }
+    .output-sample-badge {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      background: var(--amber-light);
+      color: var(--amber);
+      white-space: nowrap;
+    }
+    .output-body {
+      padding: 1.5rem;
+      max-height: 72vh;
+      overflow-y: auto;
+    }
+    .output-doc-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -.01em;
+      margin-bottom: .25rem;
+    }
+    .output-doc-meta {
+      font-size: .72rem;
+      color: var(--ink-40);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--ink-10);
+    }
+    .output-kv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .output-kv {
+      background: var(--ink-05);
+      border-radius: var(--r-sm);
+      padding: .65rem .75rem;
+    }
+    .output-kv-label {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--ink-40);
+      margin-bottom: .2rem;
+    }
+    .output-kv-value {
+      font-size: .875rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .output-section { margin-bottom: 1.25rem; }
+    .output-section-title {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--accent);
+      margin-bottom: .5rem;
+    }
+    .output-section p {
+      font-size: .82rem;
+      color: var(--ink-80);
+      line-height: 1.7;
+    }
+    .output-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .8rem;
+      margin-top: .4rem;
+    }
+    .output-table th {
+      background: var(--ink-05);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--ink-60);
+      padding: .45rem .6rem;
+      text-align: left;
+      border-bottom: 1px solid var(--ink-10);
+    }
+    .output-table td {
+      padding: .45rem .6rem;
+      color: var(--ink-80);
+      border-bottom: 1px solid var(--ink-10);
+      vertical-align: top;
+    }
+    .output-table tr:last-child td { border-bottom: none; }
+    .output-table td:last-child { font-weight: 600; color: var(--ink); text-align: right; }
+    .output-disclaimer {
+      margin-top: 1.25rem;
+      padding: .75rem 1rem;
+      background: var(--amber-light);
+      border-radius: var(--r-sm);
+      font-size: .72rem;
+      color: var(--amber);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* ── Time-saved stat ──────────────────────────────── */
+    .time-stat-block {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--accent-xlight);
+      border: 1.5px solid var(--accent-light);
+      border-radius: var(--r);
+      padding: 1rem 1.25rem;
+    }
+    .time-stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -.04em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .time-stat-label {
+      font-size: .8rem;
+      color: var(--ink-60);
+      line-height: 1.4;
+    }
+    .time-stat-label strong { color: var(--ink); font-weight: 700; }
+
+    @media (max-width: 800px) {
+      .task-body { grid-template-columns: 1fr; }
+      .output-card { position: static; }
+      .output-kv-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .task-hero { padding: 2.5rem 0 2rem; }
+      .output-kv-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── DEMO BANNER ─────────────────────────────────────────── -->
+<div class="demo-banner">
+  <strong>Sample Demo Page</strong> — This is a prototype illustrating what a task detail page could look like. Content is for demonstration only.
+</div>
+
+<!-- ── NAV ────────────────────────────────────────────────── -->
+<nav class="detail-nav">
+  <a href="index.html" class="detail-nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Back to Toolkit
+  </a>
+  <span class="detail-nav-logo">AI Toolkit</span>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section class="task-hero">
+  <div class="task-hero-inner">
+    <div class="task-breadcrumb">
+      <span>Capital Markets</span>
+      <span class="task-breadcrumb-sep">›</span>
+      <span>Proposal Development</span>
+    </div>
+    <h1>Investment Memo Draft</h1>
+    <div class="task-hero-meta">
+      <span class="meta-pill meta-dept">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Capital Markets
+      </span>
+      <span class="meta-pill meta-tool">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        Copilot
+      </span>
+      <span class="meta-pill meta-time">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Saves ~45 mins
+      </span>
+      <span class="meta-pill meta-sample">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Sample Demo
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAIN BODY ───────────────────────────────────────────── -->
+<main class="task-body">
+
+  <!-- LEFT COLUMN -->
+  <div class="task-col">
+
+    <!-- Prompt template -->
+    <div class="task-card">
+      <div class="task-card-header">
+        <div class="task-card-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </div>
+        <span class="task-card-title">The Prompt</span>
+      </div>
+      <div class="task-card-body">
+        <div class="prompt-box" id="prompt-text">Draft an investment memorandum for the following asset:
+
+Asset: <span class="prompt-placeholder">[Property name, type, location]</span>
+Ask Price: <span class="prompt-placeholder">[e.g. £42,500,000]</span>
+Key Financials: <span class="prompt-placeholder">[Cap rate, NOI, occupancy %]</span>
+Investment Thesis: <span class="prompt-placeholder">[Why is this a compelling buy?]</span>
+
+Structure:
+1. Executive Overview
+2. Market Context (local CRE dynamics)
+3. Asset Quality &amp; Risk Factors
+4. Financial Summary
+5. Recommended Position
+
+Write for a sophisticated institutional investor.
+Be factual; flag any assumptions clearly.
+        <button class="copy-prompt-btn" id="copy-btn" onclick="copyPrompt()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button></div>
+      </div>
+    </div>
+
+    <!-- Time saved -->
+    <div class="time-stat-block">
+      <div class="time-stat-value">45 min</div>
+      <div class="time-stat-label">
+        <strong>Estimated time saved per memo.</strong><br>
+        Capital Markets advisors reported cutting memo prep from ~4 hours to under 45 minutes using this prompt as the starting framework.
+      </div>
+    </div>
+
+    <!-- When to use -->
+    <div class="task-card">
+      <div class="task-card-header">
+        <div class="task-card-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <span class="task-card-title">When to Use This</span>
+      </div>
+      <div class="task-card-body">
+        <ul class="when-list">
+          <li><div class="when-dot"></div>You've completed a site visit and need to turn notes into a structured document before an investment committee meeting.</li>
+          <li><div class="when-dot"></div>A client or senior stakeholder requests a deal summary with a short turnaround.</li>
+          <li><div class="when-dot"></div>You're preparing pitch materials for a new deal and need a professional first draft quickly.</li>
+          <li><div class="when-dot"></div>You want a consistent memo structure across your team's deal documentation.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="task-card">
+      <div class="task-card-header">
+        <div class="task-card-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 017 7c0 2.5-1.3 4.7-3.3 6l-.7.5V17H9v-1.5l-.7-.5A7 7 0 0112 2z"/></svg>
+        </div>
+        <span class="task-card-title">Tips for Better Results</span>
+      </div>
+      <div class="task-card-body">
+        <div class="tips-list">
+          <div class="tip-item">
+            <div class="tip-num">1</div>
+            <div class="tip-text">
+              <strong>Be specific in the brackets.</strong> The more detail you give — exact financials, tenant name, lease expiry — the less editing the output will need. Vague inputs produce generic memos.
+            </div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">2</div>
+            <div class="tip-text">
+              <strong>Treat the output as a first draft, not a final product.</strong> Always verify every figure, yield, and market claim before sending to a client or committee. AI can hallucinate data it wasn't given.
+            </div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">3</div>
+            <div class="tip-text">
+              <strong>Add your market read after generation.</strong> The Market Context section benefits most from your own judgement. Paste the draft into Word and layer in your on-the-ground insight to make it uniquely yours.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /LEFT COLUMN -->
+
+  <!-- RIGHT COLUMN — Example output -->
+  <div class="task-col">
+    <div class="output-card">
+      <div class="output-header">
+        <div class="output-header-left">
+          <div class="output-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span class="output-header-title">Example Output</span>
+        </div>
+        <span class="output-sample-badge">Illustrative only</span>
+      </div>
+      <div class="output-body">
+
+        <div class="output-doc-title">Investment Memorandum</div>
+        <div class="output-doc-meta">Meridian Business Park, Unit 4A · Manchester, UK · Prepared by Copilot · Draft for review</div>
+
+        <div class="output-kv-grid">
+          <div class="output-kv">
+            <div class="output-kv-label">Asking Price</div>
+            <div class="output-kv-value">£42.5m</div>
+          </div>
+          <div class="output-kv">
+            <div class="output-kv-label">Net Initial Yield</div>
+            <div class="output-kv-value">5.25%</div>
+          </div>
+          <div class="output-kv">
+            <div class="output-kv-label">Occupancy</div>
+            <div class="output-kv-value">100%</div>
+          </div>
+          <div class="output-kv">
+            <div class="output-kv-label">NOI p.a.</div>
+            <div class="output-kv-value">£2.23m</div>
+          </div>
+          <div class="output-kv">
+            <div class="output-kv-label">Lease Expiry</div>
+            <div class="output-kv-value">2031</div>
+          </div>
+          <div class="output-kv">
+            <div class="output-kv-label">5-yr IRR</div>
+            <div class="output-kv-value">8.4%</div>
+          </div>
+        </div>
+
+        <div class="output-section">
+          <div class="output-section-title">1. Executive Overview</div>
+          <p>Meridian Business Park presents a compelling core logistics acquisition with a long-term, institutional-grade tenant covenant and a net initial yield of 5.25% — 25 bps above comparable prime logistics assets in the region. The 7-year unexpired lease term provides income security while the asset's location within the Manchester Airport Corridor positions it for above-average rental growth.</p>
+        </div>
+
+        <div class="output-section">
+          <div class="output-section-title">2. Market Context</div>
+          <p>Greater Manchester's logistics market continues to outperform the UK average, driven by sustained e-commerce demand and constrained Grade A supply. Vacancy in the M60 corridor stands at 2.3%, and rents have grown 12% over the past 24 months. Institutional appetite remains high, with six transactions above £30m completing in H1 2025.</p>
+        </div>
+
+        <div class="output-section">
+          <div class="output-section-title">3. Asset Quality &amp; Risk Factors</div>
+          <p>The property was comprehensively refurbished in 2021 to EPC A standard, with roof-mounted solar panels generating annual energy savings of c.£180,000. <strong>Key risk:</strong> single-tenant concentration and a lease event in 2031. Mitigant: the tenant's 15-year operational history at the site and recent capital investment significantly reduce re-letting risk.</p>
+        </div>
+
+        <div class="output-section">
+          <div class="output-section-title">4. Financial Summary</div>
+          <table class="output-table">
+            <thead>
+              <tr><th>Metric</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Asking Price</td><td>£42,500,000</td></tr>
+              <tr><td>Net Initial Yield</td><td>5.25%</td></tr>
+              <tr><td>Reversionary Yield</td><td>5.75%</td></tr>
+              <tr><td>Annual NOI</td><td>£2,231,250</td></tr>
+              <tr><td>5-yr IRR (base case)</td><td>8.4%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="output-section">
+          <div class="output-section-title">5. Recommended Position</div>
+          <p>We recommend proceeding to due diligence at the asking price. The combination of long income, strong logistics fundamentals, and ESG credentials makes this a strong fit for a core/core-plus mandate. We flag the 2031 lease event as the primary risk and recommend commissioning a re-letting feasibility study as part of due diligence.</p>
+          <p style="margin-top:.6rem; font-size:.75rem; color:var(--ink-40); font-style:italic;">Assumptions: 5-year hold · 10 bps yield compression · 3% p.a. rental growth · 5% exit costs.</p>
+        </div>
+
+        <div class="output-disclaimer">
+          ⚠ AI-generated draft — verify all figures, yields, and market data before use. This output is illustrative only and does not constitute financial advice.
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /RIGHT COLUMN -->
+
+</main>
+
+<script>
+  const PROMPT_RAW = `Draft an investment memorandum for the following asset:
+
+Asset: [Property name, type, location]
+Ask Price: [e.g. £42,500,000]
+Key Financials: [Cap rate, NOI, occupancy %]
+Investment Thesis: [Why is this a compelling buy?]
+
+Structure:
+1. Executive Overview
+2. Market Context (local CRE dynamics)
+3. Asset Quality & Risk Factors
+4. Financial Summary
+5. Recommended Position
+
+Write for a sophisticated institutional investor.
+Be factual; flag any assumptions clearly.`;
+
+  function copyPrompt() {
+    const btn = document.getElementById('copy-btn');
+    navigator.clipboard.writeText(PROMPT_RAW).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`;
+      }, 2200);
+    });
+  }
+</script>
+
+</body>
+</html>

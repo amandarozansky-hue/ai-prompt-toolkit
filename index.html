@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A curated AI prompt library built for real estate professionals. Select your department, find your task, copy and go." />
+  <title>AI Toolkit — Prompt Catalogue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+    </div>
+    AI Toolkit
+  </a>
+  <ul class="nav-links">
+    <li><a href="#catalogue">Prompts</a></li>
+    <li><a href="#use-cases">Use Cases</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#catalogue" class="nav-cta-btn">
+      Get Started
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </a></li>
+  </ul>
+  <button class="nav-mobile-toggle" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Internal AI Prompt Library &nbsp;·&nbsp; Beta
+      </div>
+
+      <h1 class="hero-title">
+        Stop starting<br>from a blank page.
+      </h1>
+
+      <p class="hero-subtitle">
+        Expert-crafted AI prompts for every department — organised by task,
+        labelled by impact, and ready to copy in one click.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#catalogue" class="btn btn-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Browse Prompts
+        </a>
+        <a href="#use-cases" class="btn btn-ghost">
+          See results from your peers
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="stat-prompts">25</div>
+          <div class="hero-stat-label">Prompts</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">8</div>
+          <div class="hero-stat-label">Departments</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">536</div>
+          <div class="hero-stat-label">Colleagues surveyed</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">71%</div>
+          <div class="hero-stat-label">Say AI saves them time</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SOCIAL PROOF STRIP
+════════════════════════════════════════════════════ -->
+<div class="proof-strip">
+  <div class="container">
+    <div class="proof-strip-inner">
+      <span class="proof-label">Serving professionals across</span>
+      <div class="proof-dept-list">
+        <span class="proof-dept">Offices</span>
+        <span class="proof-dept">Retail</span>
+        <span class="proof-dept">Industrial</span>
+        <span class="proof-dept">Living</span>
+        <span class="proof-dept">Hospitality</span>
+        <span class="proof-dept">Data Centres</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SURVEY INSIGHTS STRIP
+════════════════════════════════════════════════════ -->
+<div class="survey-strip">
+  <div class="container">
+    <div class="survey-strip-inner">
+      <div class="survey-strip-label">
+        <div class="survey-strip-dot"></div>
+        From 536 colleagues surveyed
+      </div>
+      <div class="survey-insights">
+        <div class="survey-insight">
+          <div class="survey-insight-value">53%</div>
+          <div class="survey-insight-label">use AI every day</div>
+          <div class="survey-insight-source">Q: How often do you use AI?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">71%</div>
+          <div class="survey-insight-label">say AI accelerates their work</div>
+          <div class="survey-insight-source">Q: What does AI contribute?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">61%</div>
+          <div class="survey-insight-label">lack role-specific use cases</div>
+          <div class="survey-insight-source">Q: What knowledge do you lack?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">52%</div>
+          <div class="survey-insight-label">cite practical know-how as top barrier</div>
+          <div class="survey-insight-source">Q: What slows your AI use?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">63%</div>
+          <div class="survey-insight-label">want practical guides for their role</div>
+          <div class="survey-insight-source">Q: Which initiatives add most value?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VALUE PROPS
+════════════════════════════════════════════════════ -->
+<section class="section-gap" id="value">
+  <div class="container">
+    <div class="section-hdr centered reveal">
+      <div class="section-eyebrow">Why This Toolkit</div>
+      <h2 class="section-title">Built around how you actually work</h2>
+      <p class="section-sub">AI is most powerful when it meets you where you are — not when you have to become a "prompt engineer" first.</p>
+    </div>
+    <div class="value-grid reveal">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <h3>Department-first navigation</h3>
+        <p>Filter by your team and only see the prompts relevant to your role. No irrelevant noise, no searching through lists that don't apply to you. <strong>86% of surveyed colleagues</strong> said they need examples applied to their specific role.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 5"/><circle cx="12" cy="19" r="1"/>
+          </svg>
+        </div>
+        <h3>Zero prompt expertise needed</h3>
+        <p>Every prompt is pre-structured and tested. Fill in your specific details inside the brackets and get a professional first draft in seconds. <strong>52% cited lack of practical know-how</strong> as their biggest barrier — this removes it entirely.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Impact-labelled from day one</h3>
+        <p>Prompts are tagged High Impact, Frequently Used, or Under 5 mins so you immediately know what delivers the most value with the least effort. <strong>60% said lack of time</strong> is their top constraint — start with the Under 5 min prompts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     PROMPT CATALOGUE
+════════════════════════════════════════════════════ -->
+<section id="catalogue" class="section-gap">
+  <div class="container">
+
+    <div class="catalogue-header reveal">
+      <div>
+        <div class="section-eyebrow">Prompt Catalogue</div>
+        <h2 class="section-title" style="margin-bottom:0">Find the right prompt for any task</h2>
+      </div>
+      <p class="t-body" style="max-width:300px; text-align:right;">Select your department · filter by category · copy and go.</p>
+    </div>
+
+    <!-- Department rail -->
+    <div class="dept-rail" id="dept-tabs"></div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="cat-pills" id="cat-pills"></div>
+      <div class="filter-divider"></div>
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="search-input" type="text" placeholder="Search prompts…" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Count -->
+    <div class="prompt-count-row">
+      <span id="prompt-count"></span>
+    </div>
+
+    <!-- Grid -->
+    <div class="prompt-grid" id="prompt-grid"></div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     USE CASES
+════════════════════════════════════════════════════ -->
+<section id="use-cases" class="section-gap">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="section-eyebrow" style="color:rgba(255,255,255,.4)">Results</div>
+      <h2 class="section-title" style="color:white">Your colleagues are already saving hours.</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.45)">
+        Real outcomes from real teams. Click any result to open the prompt that made it happen.
+      </p>
+    </div>
+    <div class="cases-grid reveal" id="cases-grid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════════════════ -->
+<section id="how-it-works" class="section-gap">
+  <div class="container">
+    <div class="section-hdr centered reveal">
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title">Four steps. First result in under two minutes.</h2>
+      <p class="section-sub">No training required. No AI background needed. Just your knowledge and these prompts.</p>
+    </div>
+
+    <div class="steps-wrapper reveal">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>Choose your department</h3>
+        <p>Pick your team to filter down to prompts written for your specific context and task types.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <h3>Locate your task</h3>
+        <p>Use category filters or search. Labels tell you what's highest impact and what takes under 5 minutes.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </div>
+        <h3>Copy and customise</h3>
+        <p>One-click copy. Paste into any AI tool, fill in the [brackets] with your specifics, and run.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <h3>Review and send</h3>
+        <p>AI output is a first draft — review it, add your judgement, and sign off. You remain the expert.</p>
+      </div>
+    </div>
+
+    <!-- Behavioural science callout -->
+    <div class="bsci-callout reveal">
+      <div class="bsci-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)">
+          <path d="M9 18h6"/><path d="M10 22h4"/>
+          <path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6l-.7.5V17H9v-1.5l-.7-.5A7 7 0 0 1 12 2z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="bsci-label">Behavioural Science</div>
+        <h3>Build the habit with an implementation intention</h3>
+        <p>
+          Your colleagues told us their biggest barriers are lack of time to learn (60%) and not knowing how to start (52%).
+          The solution isn't another training course. It's a ready-to-use prompt you can copy in under ten seconds.
+          Decide now: <em>"Every time I open a blank document to draft a client deliverable, I check the toolkit first."</em>
+          That one rule compounds into hours saved each month.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="footer-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="14" height="14">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        AI Toolkit
+      </div>
+      <p class="footer-note">
+        <strong>Placeholder data</strong> based on CBRE service lines ·
+        Replace with your company's real prompts before launch ·
+        Internal use only
+      </p>
+      <p class="footer-tip">
+        <span class="footer-tip-icon">💡</span>
+        <strong>Tip:</strong> Try replacing one manual task this week with a prompt above.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,2737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A curated AI prompt library built for real estate professionals. Select your department, find your task, copy and go." />
+  <title>AI Toolkit — Prompt Catalogue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+/* ═══════════════════════════════════════════════════════════════
+   AI TOOLKIT — Premium Design System
+   Palette: Off-white base · Charcoal type · Sage green accent
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── TOKENS ──────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --accent:        #1a7a5e;
+  --accent-mid:    #22a07a;
+  --accent-light:  #d6ede7;
+  --accent-xlight: #f0faf6;
+
+  /* Neutrals */
+  --ink:           #0f1117;
+  --ink-80:        #2d3139;
+  --ink-60:        #5a6272;
+  --ink-40:        #8a939f;
+  --ink-20:        #c4cad3;
+  --ink-10:        #e8ecf0;
+  --ink-05:        #f4f6f8;
+  --white:         #ffffff;
+
+  /* Semantic */
+  --blue:          #1d5fa8;
+  --blue-light:    #e8f0fb;
+  --purple:        #5b35b5;
+  --purple-light:  #ede8fb;
+  --amber:         #b45309;
+  --amber-light:   #fef3c7;
+
+  /* Geometry */
+  --r-xs:  4px;
+  --r-sm:  8px;
+  --r:    12px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+  --shadow:    0 4px 20px rgba(0,0,0,.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
+  --shadow-xl: 0 24px 64px rgba(0,0,0,.16);
+
+  /* Motion */
+  --ease:    cubic-bezier(.25,.46,.45,.94);
+  --ease-out:cubic-bezier(0,.55,.45,1);
+  --dur:     200ms;
+  --dur-lg:  350ms;
+}
+
+/* ─── RESET ───────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+img,svg { display:block; }
+button,input { font:inherit; }
+a { color:inherit; text-decoration:none; }
+
+/* ─── BASE ────────────────────────────────────────────────────── */
+body {
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--white);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ─── TYPE SCALE ──────────────────────────────────────────────── */
+.t-overline {
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+.t-display {
+  font-size:clamp(2.6rem,5vw,4rem);
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-.03em;
+}
+.t-h2 {
+  font-size:clamp(1.75rem,3vw,2.5rem);
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:-.02em;
+}
+.t-h3 {
+  font-size:1.1rem;
+  font-weight:600;
+  line-height:1.35;
+}
+.t-body {
+  font-size:1rem;
+  line-height:1.7;
+  color:var(--ink-60);
+}
+.t-small {
+  font-size:.8rem;
+  line-height:1.5;
+  color:var(--ink-40);
+}
+
+/* ─── LAYOUT UTILITIES ────────────────────────────────────────── */
+.container {
+  width:100%;
+  max-width:1120px;
+  margin:0 auto;
+  padding:0 2rem;
+}
+.section-gap { padding:7rem 0; }
+.section-gap-sm { padding:4rem 0; }
+
+/* ─── SCROLL FADE-UP ANIMATION ────────────────────────────────── */
+.reveal {
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity var(--dur-lg) var(--ease), transform var(--dur-lg) var(--ease);
+}
+.reveal.visible {
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════════════════════════ */
+.nav {
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:500;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 2rem;
+  background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+  transition:box-shadow var(--dur) var(--ease);
+}
+.nav.scrolled { box-shadow:var(--shadow-sm); }
+
+.nav-logo {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  font-size:.95rem;
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:var(--ink);
+}
+.nav-logo-mark {
+  width:30px; height:30px;
+  background:var(--ink);
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+}
+.nav-logo-mark svg { width:16px; height:16px; }
+
+.nav-links {
+  display:flex;
+  align-items:center;
+  gap:.25rem;
+  list-style:none;
+}
+.nav-links a {
+  font-size:.85rem;
+  font-weight:500;
+  color:var(--ink-60);
+  padding:.4rem .75rem;
+  border-radius:var(--r-sm);
+  transition:color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.nav-links a:hover { color:var(--ink); background:var(--ink-05); }
+.nav-links a.active { color:var(--ink); }
+
+.nav-cta-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.45rem 1rem;
+  background:var(--ink);
+  color:var(--white) !important;
+  border-radius:var(--r-sm);
+  font-size:.85rem;
+  font-weight:600;
+  transition:background var(--dur) var(--ease), transform var(--dur) var(--ease) !important;
+}
+.nav-cta-btn:hover {
+  background:var(--ink-80) !important;
+  transform:translateY(-1px);
+  color:var(--white) !important;
+}
+
+.nav-mobile-toggle {
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:.4rem;
+  border-radius:var(--r-sm);
+  color:var(--ink);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════════════════ */
+.hero {
+  padding:calc(60px + 6rem) 0 5rem;
+  background:var(--white);
+  position:relative;
+  overflow:hidden;
+}
+
+/* Subtle grid texture */
+.hero::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,0,0,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  pointer-events:none;
+}
+
+/* Glow blob */
+.hero::after {
+  content:'';
+  position:absolute;
+  top:-20%;
+  left:50%;
+  transform:translateX(-50%);
+  width:800px;
+  height:500px;
+  background:radial-gradient(ellipse, rgba(26,122,94,.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.hero-inner {
+  position:relative;
+  z-index:1;
+  text-align:center;
+  max-width:760px;
+  margin:0 auto;
+}
+
+.hero-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.3rem .9rem;
+  border-radius:100px;
+  border:1px solid var(--ink-10);
+  background:var(--white);
+  box-shadow:var(--shadow-xs);
+  font-size:.75rem;
+  font-weight:600;
+  color:var(--ink-60);
+  letter-spacing:.04em;
+  margin-bottom:2rem;
+}
+.hero-badge-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--accent-mid);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.6; transform:scale(1.3); }
+}
+
+.hero-title {
+  font-size:clamp(2.8rem,5.5vw,4.2rem);
+  font-weight:800;
+  line-height:1.08;
+  letter-spacing:-.035em;
+  color:var(--ink);
+  margin-bottom:1.5rem;
+}
+.hero-title em {
+  font-style:normal;
+  color:var(--accent);
+}
+
+.hero-subtitle {
+  font-size:1.1rem;
+  line-height:1.7;
+  color:var(--ink-60);
+  max-width:520px;
+  margin:0 auto 2.5rem;
+}
+
+.hero-actions {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.75rem;
+  flex-wrap:wrap;
+  margin-bottom:4rem;
+}
+
+/* ─── BUTTONS ─────────────────────────────────────────────────── */
+.btn {
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.7rem 1.5rem;
+  border-radius:var(--r);
+  font-size:.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  transition:all var(--dur) var(--ease);
+  white-space:nowrap;
+}
+.btn svg { width:15px; height:15px; flex-shrink:0; }
+
+.btn-dark {
+  background:var(--ink);
+  color:var(--white);
+  box-shadow:0 2px 8px rgba(15,17,23,.2);
+}
+.btn-dark:hover {
+  background:var(--ink-80);
+  transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(15,17,23,.25);
+}
+
+.btn-ghost {
+  background:transparent;
+  color:var(--ink-60);
+  border:1.5px solid var(--ink-10);
+}
+.btn-ghost:hover {
+  background:var(--ink-05);
+  color:var(--ink);
+  border-color:var(--ink-20);
+}
+
+.btn-accent {
+  background:var(--accent);
+  color:var(--white);
+  box-shadow:0 2px 8px rgba(26,122,94,.3);
+}
+.btn-accent:hover {
+  background:var(--accent-mid);
+  transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(26,122,94,.35);
+}
+
+/* ─── HERO STATS ──────────────────────────────────────────────── */
+.hero-stats {
+  display:flex;
+  justify-content:center;
+  gap:0;
+  border:1px solid var(--ink-10);
+  border-radius:var(--r-lg);
+  background:var(--white);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+  max-width:620px;
+  margin:0 auto;
+}
+.hero-stat {
+  flex:1;
+  padding:1.5rem 1rem;
+  text-align:center;
+  border-right:1px solid var(--ink-10);
+  transition:background var(--dur) var(--ease);
+}
+.hero-stat:last-child { border-right:none; }
+.hero-stat:hover { background:var(--ink-05); }
+
+.hero-stat-value {
+  font-size:1.75rem;
+  font-weight:800;
+  letter-spacing:-.04em;
+  color:var(--ink);
+  line-height:1;
+  margin-bottom:.3rem;
+}
+.hero-stat-label {
+  font-size:.7rem;
+  font-weight:600;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--ink-40);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SOCIAL PROOF STRIP
+   ══════════════════════════════════════════════════════════════ */
+.proof-strip {
+  background:var(--ink-05);
+  border-top:1px solid var(--ink-10);
+  border-bottom:1px solid var(--ink-10);
+  padding:1.5rem 0;
+}
+.proof-strip-inner {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3rem;
+  flex-wrap:wrap;
+}
+.proof-label {
+  font-size:.75rem;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-40);
+  white-space:nowrap;
+}
+.proof-dept-list {
+  display:flex;
+  align-items:center;
+  gap:2rem;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.proof-dept {
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--ink-60);
+  opacity:.7;
+  letter-spacing:.02em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SURVEY INSIGHTS STRIP
+   ══════════════════════════════════════════════════════════════ */
+.survey-strip {
+  background:var(--white);
+  border-bottom:1px solid var(--ink-10);
+  padding:2.5rem 0;
+}
+.survey-strip-inner {
+  display:flex;
+  align-items:flex-start;
+  gap:3rem;
+  flex-wrap:wrap;
+}
+.survey-strip-label {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--ink-40);
+  white-space:nowrap;
+  padding-top:.2rem;
+}
+.survey-strip-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--accent);
+  flex-shrink:0;
+}
+.survey-insights {
+  display:flex;
+  gap:3rem;
+  flex-wrap:wrap;
+  flex:1;
+}
+.survey-insight {
+  display:flex;
+  flex-direction:column;
+  gap:.2rem;
+  min-width:140px;
+}
+.survey-insight-value {
+  font-size:2rem;
+  font-weight:800;
+  color:var(--ink);
+  letter-spacing:-.04em;
+  line-height:1;
+}
+.survey-insight-label {
+  font-size:.8rem;
+  color:var(--ink-60);
+  line-height:1.4;
+  max-width:160px;
+}
+.survey-insight-source {
+  font-size:.7rem;
+  color:var(--ink-40);
+  margin-top:.1rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VALUE PROPS (3-UP)
+   ══════════════════════════════════════════════════════════════ */
+.value-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5px;
+  background:var(--ink-10);
+  border:1px solid var(--ink-10);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+}
+.value-card {
+  background:var(--white);
+  padding:2.5rem 2rem;
+  transition:background var(--dur) var(--ease);
+}
+.value-card:hover { background:var(--ink-05); }
+.value-icon {
+  width:44px; height:44px;
+  border-radius:var(--r-sm);
+  background:var(--accent-xlight);
+  display:grid;
+  place-items:center;
+  margin-bottom:1.25rem;
+}
+.value-icon svg { width:20px; height:20px; color:var(--accent); }
+.value-card h3 { margin-bottom:.5rem; font-size:1rem; font-weight:700; color:var(--ink); }
+.value-card p { font-size:.875rem; color:var(--ink-60); line-height:1.6; }
+
+/* ══════════════════════════════════════════════════════════════
+   CATALOGUE SECTION
+   ══════════════════════════════════════════════════════════════ */
+#catalogue { background:var(--ink-05); }
+
+.catalogue-header {
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:2.5rem;
+  flex-wrap:wrap;
+}
+
+/* Department tabs */
+.dept-rail {
+  display:flex;
+  flex-wrap:wrap;
+  gap:.375rem;
+  margin-bottom:1.5rem;
+}
+.dept-tab {
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.45rem .9rem;
+  border-radius:100px;
+  border:1.5px solid var(--ink-10);
+  background:var(--white);
+  color:var(--ink-60);
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all var(--dur) var(--ease);
+  white-space:nowrap;
+  box-shadow:var(--shadow-xs);
+}
+.dept-tab svg { width:13px; height:13px; flex-shrink:0; }
+.dept-tab:hover { border-color:var(--ink-20); color:var(--ink); background:var(--white); }
+.dept-tab.active {
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--white);
+  box-shadow:0 2px 8px rgba(15,17,23,.2);
+}
+
+/* Filter bar */
+.filter-bar {
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  background:var(--white);
+  border:1.5px solid var(--ink-10);
+  border-radius:var(--r-lg);
+  padding:.625rem 1rem;
+  box-shadow:var(--shadow-xs);
+  margin-bottom:2rem;
+  flex-wrap:wrap;
+}
+.filter-divider {
+  width:1px;
+  height:20px;
+  background:var(--ink-10);
+  flex-shrink:0;
+}
+.cat-pills { display:flex; flex-wrap:wrap; gap:.375rem; }
+.cat-pill {
+  padding:.3rem .75rem;
+  border-radius:100px;
+  border:1.5px solid transparent;
+  background:transparent;
+  color:var(--ink-60);
+  font-size:.775rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all var(--dur) var(--ease);
+  white-space:nowrap;
+}
+.cat-pill:hover { background:var(--ink-05); color:var(--ink); }
+.cat-pill.active {
+  background:var(--accent-xlight);
+  color:var(--accent);
+  border-color:var(--accent-light);
+}
+
+.search-wrap {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  margin-left:auto;
+}
+.search-wrap svg { width:14px; height:14px; color:var(--ink-40); flex-shrink:0; }
+.search-wrap input {
+  border:none;
+  background:transparent;
+  font-size:.85rem;
+  color:var(--ink);
+  outline:none;
+  width:180px;
+}
+.search-wrap input::placeholder { color:var(--ink-40); }
+
+/* Prompt count */
+.prompt-count-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:1.25rem;
+}
+#prompt-count {
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--ink-40);
+  letter-spacing:.03em;
+}
+
+/* Prompt grid */
+.prompt-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1rem;
+}
+
+/* Prompt card */
+.prompt-card {
+  background:var(--white);
+  border:1.5px solid var(--ink-10);
+  border-radius:var(--r-lg);
+  padding:1.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:.875rem;
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+  animation:cardIn .3s var(--ease) both;
+}
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.prompt-card:hover {
+  border-color:var(--ink-20);
+  box-shadow:var(--shadow);
+  transform:translateY(-2px);
+}
+
+.card-header { display:flex; flex-direction:column; gap:.3rem; }
+.card-title {
+  font-size:.975rem;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.3;
+}
+.card-header-meta {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  flex-wrap:wrap;
+}
+.card-category {
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--ink-40);
+}
+
+/* ── Tool badges ─────────────────────────────────────────── */
+.tool-badge {
+  font-size:.65rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  padding:.15rem .45rem;
+  border-radius:var(--r-xs);
+  white-space:nowrap;
+}
+.tool-copilot { background:var(--blue-light);    color:var(--blue);   }
+.tool-ellis   { background:var(--accent-xlight); color:var(--accent); }
+.tool-claude  { background:var(--amber-light);   color:var(--amber);  }
+
+/* Modal tool meta row */
+.modal-top-meta {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  flex-wrap:wrap;
+  margin-top:.15rem;
+}
+
+.card-labels { display:flex; flex-wrap:wrap; gap:.35rem; }
+.label {
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  padding:.18rem .55rem;
+  border-radius:100px;
+}
+.label-blue   { background:var(--blue-light);   color:var(--blue);   }
+.label-green  { background:var(--accent-xlight); color:var(--accent); }
+.label-purple { background:var(--purple-light);  color:var(--purple); }
+.label-amber  { background:var(--amber-light);   color:var(--amber);  }
+
+.card-preview {
+  font-size:.845rem;
+  color:var(--ink-60);
+  line-height:1.6;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* Impact badge */
+.card-impact {
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.75rem;
+  font-weight:600;
+  color:var(--accent);
+  background:var(--accent-xlight);
+  border-radius:var(--r-sm);
+  padding:.4rem .7rem;
+  border:1px solid var(--accent-light);
+}
+.card-impact svg { width:12px; height:12px; flex-shrink:0; }
+
+.card-actions { display:flex; gap:.5rem; margin-top:auto; }
+
+.btn-card-copy {
+  flex:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.4rem;
+  padding:.55rem .75rem;
+  border-radius:var(--r-sm);
+  font-size:.78rem;
+  font-weight:700;
+  background:var(--ink);
+  color:var(--white);
+  border:none;
+  cursor:pointer;
+  letter-spacing:.01em;
+  transition:all var(--dur) var(--ease);
+}
+.btn-card-copy:hover { background:var(--ink-80); transform:translateY(-1px); }
+.btn-card-copy.copied { background:var(--accent); }
+.btn-card-copy svg { width:13px; height:13px; }
+
+.btn-card-view {
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.4rem;
+  padding:.55rem .75rem;
+  border-radius:var(--r-sm);
+  font-size:.78rem;
+  font-weight:600;
+  background:transparent;
+  color:var(--ink-60);
+  border:1.5px solid var(--ink-10);
+  cursor:pointer;
+  transition:all var(--dur) var(--ease);
+}
+.btn-card-view:hover { background:var(--ink-05); color:var(--ink); border-color:var(--ink-20); }
+.btn-card-view svg { width:13px; height:13px; }
+
+/* Empty state */
+.empty-state {
+  grid-column:1/-1;
+  text-align:center;
+  padding:5rem 2rem;
+}
+.empty-state-icon {
+  width:56px; height:56px;
+  border-radius:var(--r-lg);
+  background:var(--ink-05);
+  display:grid;
+  place-items:center;
+  margin:0 auto 1.25rem;
+}
+.empty-state-icon svg { width:24px; height:24px; color:var(--ink-20); }
+.empty-state h3 { font-size:1rem; color:var(--ink-60); margin-bottom:.4rem; }
+.empty-state p { font-size:.85rem; color:var(--ink-40); }
+
+/* ── Coming-soon tile ────────────────────────────────────────── */
+.coming-soon-tile {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 2rem;
+  border: 1.5px dashed var(--ink-20);
+  border-radius: var(--r-lg);
+  background: var(--ink-05);
+  margin-top: .5rem;
+}
+.coming-soon-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--r);
+  background: var(--white);
+  border: 1.5px solid var(--ink-10);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--ink-40);
+}
+.coming-soon-icon svg { width: 20px; height: 20px; }
+.coming-soon-body { flex: 1; min-width: 0; }
+.coming-soon-title {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--ink-80);
+  margin-bottom: .2rem;
+}
+.coming-soon-sub {
+  font-size: .8rem;
+  color: var(--ink-40);
+  line-height: 1.55;
+  max-width: 560px;
+}
+.coming-soon-badge {
+  flex-shrink: 0;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1.5px solid var(--ink-10);
+  color: var(--ink-40);
+}
+
+@media (max-width: 600px) {
+  .coming-soon-tile { flex-wrap: wrap; }
+  .coming-soon-badge { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL
+   ══════════════════════════════════════════════════════════════ */
+.modal-overlay {
+  position:fixed;
+  inset:0;
+  z-index:600;
+  background:rgba(10,12,18,.5);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+  display:grid;
+  place-items:center;
+  padding:1rem;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--dur) var(--ease);
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+
+.modal {
+  background:var(--white);
+  border-radius:var(--r-xl);
+  width:100%;
+  max-width:620px;
+  max-height:88vh;
+  overflow-y:auto;
+  box-shadow:var(--shadow-xl);
+  transform:scale(.97) translateY(12px);
+  transition:transform var(--dur) var(--ease);
+}
+.modal-overlay.open .modal { transform:scale(1) translateY(0); }
+
+.modal-top {
+  position:sticky;
+  top:0;
+  background:var(--white);
+  border-bottom:1px solid var(--ink-10);
+  padding:1.5rem 1.5rem 1.25rem;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+  z-index:1;
+}
+.modal-top-left { flex:1; }
+.modal-title { font-size:1.15rem; font-weight:700; color:var(--ink); margin-bottom:.2rem; }
+.modal-cat { font-size:.75rem; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-40); }
+
+.modal-close {
+  width:32px; height:32px;
+  border-radius:var(--r-sm);
+  border:1.5px solid var(--ink-10);
+  background:var(--white);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  color:var(--ink-40);
+  flex-shrink:0;
+  transition:all var(--dur) var(--ease);
+}
+.modal-close:hover { background:var(--ink-05); color:var(--ink); border-color:var(--ink-20); }
+.modal-close svg { width:14px; height:14px; }
+
+.modal-body { padding:1.5rem; }
+
+.modal-labels { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1.25rem; }
+
+/* Impact block */
+.modal-impact {
+  border:1.5px solid var(--accent-light);
+  border-radius:var(--r);
+  background:var(--accent-xlight);
+  padding:1.25rem;
+  margin-bottom:1.5rem;
+}
+.modal-impact-header {
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:.875rem;
+}
+.modal-impact-header svg { width:12px; height:12px; }
+.modal-impact-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+.modal-impact-item-label { font-size:.7rem; color:var(--ink-40); font-weight:500; margin-bottom:.2rem; }
+.modal-impact-item-value { font-size:.875rem; font-weight:700; color:var(--ink); }
+
+/* Prompt block */
+.modal-prompt-label {
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-40);
+  margin-bottom:.6rem;
+}
+.modal-prompt-box {
+  background:var(--ink-05);
+  border:1.5px solid var(--ink-10);
+  border-radius:var(--r);
+  padding:1.25rem;
+  font-family:'SF Mono','Fira Code','Menlo',monospace;
+  font-size:.82rem;
+  color:var(--ink-80);
+  line-height:1.75;
+  white-space:pre-wrap;
+  word-break:break-word;
+  margin-bottom:1.25rem;
+  position:relative;
+}
+
+.modal-actions { display:flex; gap:.75rem; }
+
+.modal-btn-copy {
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  padding:.75rem 1.25rem;
+  border-radius:var(--r);
+  background:var(--ink);
+  color:var(--white);
+  font-size:.875rem;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+  transition:all var(--dur) var(--ease);
+}
+.modal-btn-copy:hover { background:var(--ink-80); transform:translateY(-1px); }
+.modal-btn-copy.copied { background:var(--accent); }
+.modal-btn-copy svg { width:15px; height:15px; }
+
+/* ══════════════════════════════════════════════════════════════
+   DETAIL MODAL
+   ══════════════════════════════════════════════════════════════ */
+.modal.modal-detail {
+  max-width:960px;
+  max-height:90vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+/* sticky header */
+.dm-top { flex-shrink:0; }
+.dm-breadcrumb {
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--ink-40);
+  margin-bottom:.3rem;
+}
+.dm-time-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:.3rem;
+  font-size:.68rem;
+  font-weight:700;
+  padding:.2rem .5rem;
+  border-radius:999px;
+  background:rgba(26,122,94,.1);
+  color:var(--accent);
+}
+.dm-sample-pill {
+  font-size:.65rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  padding:.2rem .5rem;
+  border-radius:999px;
+  background:var(--amber-light);
+  color:var(--amber);
+}
+
+/* two-column grid */
+.dm-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  flex:1;
+  overflow:hidden;
+}
+.dm-col {
+  overflow-y:auto;
+  padding:1.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:1.5rem;
+}
+.dm-col-right {
+  background:var(--ink-05);
+  border-left:1px solid var(--ink-10);
+}
+
+/* section label */
+.dm-section-label {
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--ink-60);
+  margin-bottom:.75rem;
+}
+.dm-section-label svg { color:var(--ink-40); }
+
+/* prompt box */
+.dm-prompt-box {
+  background:var(--ink-05);
+  border:1px solid var(--ink-10);
+  border-radius:var(--r);
+  padding:1rem;
+  font-size:.8rem;
+  line-height:1.75;
+  color:var(--ink-80);
+  white-space:pre-wrap;
+  margin-bottom:.75rem;
+}
+.dm-copy-btn { width:100%; justify-content:center; }
+
+/* when to use */
+.dm-when-list {
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+}
+.dm-when-list li {
+  display:flex;
+  gap:.6rem;
+  font-size:.85rem;
+  color:var(--ink-80);
+  line-height:1.5;
+}
+.dm-when-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--accent);
+  margin-top:.45rem;
+  flex-shrink:0;
+}
+
+/* tips */
+.dm-tips { display:flex; flex-direction:column; gap:.9rem; }
+.dm-tip {
+  display:flex;
+  gap:.7rem;
+  font-size:.85rem;
+  color:var(--ink-80);
+  line-height:1.55;
+}
+.dm-tip strong { color:var(--ink); }
+.dm-tip-num {
+  min-width:20px; height:20px;
+  border-radius:50%;
+  background:var(--accent-xlight);
+  color:var(--accent);
+  font-size:.68rem;
+  font-weight:800;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  margin-top:.15rem;
+}
+
+/* time saved block */
+.dm-time-block {
+  display:flex;
+  align-items:center;
+  gap:.9rem;
+  background:var(--accent-xlight);
+  border:1.5px solid var(--accent-light);
+  border-radius:var(--r);
+  padding:.9rem 1rem;
+}
+.dm-time-value {
+  font-size:1.75rem;
+  font-weight:800;
+  color:var(--accent);
+  letter-spacing:-.04em;
+  line-height:1;
+  white-space:nowrap;
+}
+.dm-time-text { font-size:.78rem; color:var(--ink-60); line-height:1.45; }
+
+/* output card */
+.dm-output-card {
+  background:var(--white);
+  border:1.5px solid var(--ink-10);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+}
+.dm-output-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:.75rem 1rem;
+  border-bottom:1px solid var(--ink-10);
+}
+.dm-output-title {
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-60);
+}
+.dm-output-badge {
+  font-size:.63rem;
+  font-weight:700;
+  padding:.15rem .45rem;
+  border-radius:999px;
+  background:var(--amber-light);
+  color:var(--amber);
+}
+.dm-output-body { padding:1.25rem; }
+.dm-doc-title { font-size:.95rem; font-weight:800; color:var(--ink); margin-bottom:.2rem; }
+.dm-doc-meta { font-size:.7rem; color:var(--ink-40); margin-bottom:1rem; padding-bottom:.9rem; border-bottom:1px solid var(--ink-10); }
+.dm-kv-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.5rem;
+  margin-bottom:1.1rem;
+}
+.dm-kv { background:var(--ink-05); border-radius:var(--r-sm); padding:.5rem .6rem; }
+.dm-kv-label { font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-40); margin-bottom:.15rem; }
+.dm-kv-value { font-size:.82rem; font-weight:700; color:var(--ink); }
+.dm-output-section { margin-bottom:1rem; }
+.dm-output-section-title { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--accent); margin-bottom:.35rem; }
+.dm-output-section p { font-size:.78rem; color:var(--ink-80); line-height:1.65; }
+.dm-output-section strong { color:var(--ink); }
+.dm-table { width:100%; border-collapse:collapse; font-size:.77rem; margin-top:.35rem; }
+.dm-table td { padding:.35rem .5rem; color:var(--ink-80); border-bottom:1px solid var(--ink-10); }
+.dm-table td:last-child { font-weight:700; color:var(--ink); text-align:right; }
+.dm-table tr:last-child td { border-bottom:none; }
+.dm-assumption { margin-top:.5rem; font-size:.68rem; color:var(--ink-40); font-style:italic; }
+.dm-disclaimer {
+  margin-top:1rem;
+  padding:.6rem .8rem;
+  background:var(--amber-light);
+  border-radius:var(--r-sm);
+  font-size:.7rem;
+  color:var(--amber);
+  font-weight:600;
+}
+
+/* responsive */
+@media (max-width:720px) {
+  .modal.modal-detail { max-height:95vh; }
+  .dm-grid { grid-template-columns:1fr; }
+  .dm-col-right { border-left:none; border-top:1px solid var(--ink-10); }
+  .dm-kv-grid { grid-template-columns:repeat(2,1fr); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   USE CASES
+   ══════════════════════════════════════════════════════════════ */
+#use-cases { background:var(--ink); }
+#use-cases .section-eyebrow { color:rgba(255,255,255,.4); }
+#use-cases .section-title { color:var(--white); }
+#use-cases .section-sub { color:rgba(255,255,255,.5); }
+
+.cases-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--r-xl);
+  overflow:hidden;
+}
+
+.case-card {
+  background:rgba(255,255,255,.03);
+  padding:2rem;
+  cursor:pointer;
+  transition:background var(--dur) var(--ease);
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+}
+.case-card:hover { background:rgba(255,255,255,.07); }
+
+.case-metric {
+  font-size:2.5rem;
+  font-weight:800;
+  letter-spacing:-.04em;
+  line-height:1;
+  color:var(--white);
+}
+.case-metric-sub {
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.35);
+  margin-bottom:.25rem;
+}
+.case-dept-tag {
+  display:inline-flex;
+  align-items:center;
+  padding:.2rem .65rem;
+  border-radius:100px;
+  background:rgba(34,160,122,.2);
+  border:1px solid rgba(34,160,122,.3);
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:#5ee9be;
+  width:fit-content;
+}
+.case-task { font-size:.975rem; font-weight:600; color:var(--white); }
+.case-detail { font-size:.82rem; color:rgba(255,255,255,.5); line-height:1.6; }
+.case-cta {
+  display:inline-flex;
+  align-items:center;
+  gap:.3rem;
+  font-size:.775rem;
+  font-weight:600;
+  color:rgba(255,255,255,.35);
+  margin-top:auto;
+  transition:color var(--dur) var(--ease);
+}
+.case-card:hover .case-cta { color:#5ee9be; }
+.case-cta svg { width:13px; height:13px; }
+
+/* ══════════════════════════════════════════════════════════════
+   HOW IT WORKS
+   ══════════════════════════════════════════════════════════════ */
+#how-it-works { background:var(--white); }
+
+.steps-wrapper {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--ink-10);
+  border:1.5px solid var(--ink-10);
+  border-radius:var(--r-xl);
+  overflow:hidden;
+  margin-bottom:3rem;
+}
+.step-card {
+  background:var(--white);
+  padding:2.5rem 1.75rem;
+  transition:background var(--dur) var(--ease);
+  position:relative;
+}
+.step-card:hover { background:var(--ink-05); }
+
+.step-num {
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-20);
+  margin-bottom:1.25rem;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+.step-num::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--ink-10);
+}
+
+.step-icon-wrap {
+  width:40px; height:40px;
+  border-radius:var(--r-sm);
+  background:var(--ink-05);
+  border:1.5px solid var(--ink-10);
+  display:grid;
+  place-items:center;
+  margin-bottom:1rem;
+  color:var(--ink-60);
+}
+.step-card h3 { font-size:.975rem; margin-bottom:.5rem; color:var(--ink); }
+.step-card p { font-size:.84rem; color:var(--ink-60); line-height:1.6; }
+
+/* Behaviour science callout */
+.bsci-callout {
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:1.5rem;
+  align-items:start;
+  border:1.5px solid var(--ink-10);
+  border-radius:var(--r-lg);
+  padding:2rem;
+  background:var(--ink-05);
+}
+.bsci-icon {
+  width:48px; height:48px;
+  border-radius:var(--r);
+  background:var(--white);
+  border:1.5px solid var(--ink-10);
+  display:grid;
+  place-items:center;
+  font-size:1.5rem;
+  flex-shrink:0;
+}
+.bsci-label {
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:.4rem;
+}
+.bsci-callout h3 { font-size:1rem; color:var(--ink); margin-bottom:.5rem; }
+.bsci-callout p { font-size:.875rem; color:var(--ink-60); line-height:1.7; max-width:580px; }
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION HEADER SHARED STYLES
+   ══════════════════════════════════════════════════════════════ */
+.section-eyebrow {
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:.6rem;
+}
+.section-title {
+  font-size:clamp(1.75rem,3vw,2.4rem);
+  font-weight:800;
+  letter-spacing:-.025em;
+  line-height:1.2;
+  color:var(--ink);
+  margin-bottom:.75rem;
+}
+.section-sub {
+  font-size:.975rem;
+  color:var(--ink-60);
+  max-width:500px;
+  line-height:1.65;
+}
+.section-hdr { margin-bottom:3rem; }
+.section-hdr.centered { text-align:center; }
+.section-hdr.centered .section-sub { margin:0 auto; }
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════════════════ */
+footer {
+  background:var(--ink);
+  padding:3rem 0;
+}
+.footer-inner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+  flex-wrap:wrap;
+}
+.footer-logo {
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  font-size:.9rem;
+  font-weight:700;
+  color:var(--white);
+}
+.footer-logo-mark {
+  width:28px; height:28px;
+  background:rgba(255,255,255,.12);
+  border-radius:7px;
+  display:grid;
+  place-items:center;
+}
+.footer-logo-mark svg { width:14px; height:14px; }
+.footer-note { font-size:.78rem; color:rgba(255,255,255,.3); }
+.footer-note strong { color:rgba(255,255,255,.5); }
+.footer-tip {
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+  font-size:.78rem;
+  color:rgba(255,255,255,.45);
+  margin-top:.5rem;
+}
+.footer-tip strong { color:rgba(255,255,255,.65); }
+.footer-tip-icon { font-size:.85rem; }
+
+/* ══════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--ink-10); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--ink-20); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width:900px) {
+  .value-grid { grid-template-columns:1fr; }
+  .steps-wrapper { grid-template-columns:repeat(2,1fr); }
+  .cases-grid { grid-template-columns:1fr; }
+}
+
+@media (max-width:700px) {
+  .survey-strip-inner { flex-direction:column; gap:1.5rem; }
+  .survey-insights { gap:1.5rem; }
+  .nav-links { display:none; }
+  .nav-mobile-toggle { display:grid; place-items:center; }
+  .hero-stats { flex-direction:column; border-radius:var(--r); }
+  .hero-stat { border-right:none; border-bottom:1px solid var(--ink-10); }
+  .hero-stat:last-child { border-bottom:none; }
+  .steps-wrapper { grid-template-columns:1fr; }
+  .prompt-grid { grid-template-columns:1fr; }
+  .filter-bar { flex-direction:column; align-items:flex-start; }
+  .search-wrap { width:100%; }
+  .search-wrap input { width:100%; }
+  .filter-divider { display:none; }
+  .modal-impact-grid { grid-template-columns:1fr; gap:.75rem; }
+  .bsci-callout { grid-template-columns:1fr; }
+  .footer-inner { flex-direction:column; align-items:flex-start; }
+}
+
+@media (max-width:480px) {
+  .container { padding:0 1.25rem; }
+  .hero { padding:calc(60px + 4rem) 0 3rem; }
+  .section-gap { padding:4rem 0; }
+  .dept-rail { gap:.25rem; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+    </div>
+    AI Toolkit
+  </a>
+  <ul class="nav-links">
+    <li><a href="#catalogue">Prompts</a></li>
+    <li><a href="#use-cases">Use Cases</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#catalogue" class="nav-cta-btn">
+      Get Started
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </a></li>
+  </ul>
+  <button class="nav-mobile-toggle" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Internal AI Prompt Library &nbsp;·&nbsp; Beta
+      </div>
+
+      <h1 class="hero-title">
+        Stop starting<br>from a blank page.
+      </h1>
+
+      <p class="hero-subtitle">
+        Expert-crafted AI prompts for every department — organised by task,
+        labelled by impact, and ready to copy in one click.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#catalogue" class="btn btn-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Browse Prompts
+        </a>
+        <a href="#use-cases" class="btn btn-ghost">
+          See results from your peers
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="stat-prompts">25</div>
+          <div class="hero-stat-label">Prompts</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">8</div>
+          <div class="hero-stat-label">Departments</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">536</div>
+          <div class="hero-stat-label">Colleagues surveyed</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">71%</div>
+          <div class="hero-stat-label">Say AI saves them time</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SOCIAL PROOF STRIP
+════════════════════════════════════════════════════ -->
+<div class="proof-strip">
+  <div class="container">
+    <div class="proof-strip-inner">
+      <span class="proof-label">Serving professionals across</span>
+      <div class="proof-dept-list">
+        <span class="proof-dept">Offices</span>
+        <span class="proof-dept">Retail</span>
+        <span class="proof-dept">Industrial</span>
+        <span class="proof-dept">Living</span>
+        <span class="proof-dept">Hospitality</span>
+        <span class="proof-dept">Data Centres</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SURVEY INSIGHTS STRIP
+════════════════════════════════════════════════════ -->
+<div class="survey-strip">
+  <div class="container">
+    <div class="survey-strip-inner">
+      <div class="survey-strip-label">
+        <div class="survey-strip-dot"></div>
+        From 536 colleagues surveyed
+      </div>
+      <div class="survey-insights">
+        <div class="survey-insight">
+          <div class="survey-insight-value">53%</div>
+          <div class="survey-insight-label">use AI every day</div>
+          <div class="survey-insight-source">Q: How often do you use AI?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">71%</div>
+          <div class="survey-insight-label">say AI accelerates their work</div>
+          <div class="survey-insight-source">Q: What does AI contribute?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">61%</div>
+          <div class="survey-insight-label">lack role-specific use cases</div>
+          <div class="survey-insight-source">Q: What knowledge do you lack?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">52%</div>
+          <div class="survey-insight-label">cite practical know-how as top barrier</div>
+          <div class="survey-insight-source">Q: What slows your AI use?</div>
+        </div>
+        <div class="survey-insight">
+          <div class="survey-insight-value">63%</div>
+          <div class="survey-insight-label">want practical guides for their role</div>
+          <div class="survey-insight-source">Q: Which initiatives add most value?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VALUE PROPS
+════════════════════════════════════════════════════ -->
+<section class="section-gap" id="value">
+  <div class="container">
+    <div class="section-hdr centered reveal">
+      <div class="section-eyebrow">Why This Toolkit</div>
+      <h2 class="section-title">Built around how you actually work</h2>
+      <p class="section-sub">AI is most powerful when it meets you where you are — not when you have to become a "prompt engineer" first.</p>
+    </div>
+    <div class="value-grid reveal">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <h3>Department-first navigation</h3>
+        <p>Filter by your team and only see the prompts relevant to your role. No irrelevant noise, no searching through lists that don't apply to you. <strong>86% of surveyed colleagues</strong> said they need examples applied to their specific role.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 5"/><circle cx="12" cy="19" r="1"/>
+          </svg>
+        </div>
+        <h3>Zero prompt expertise needed</h3>
+        <p>Every prompt is pre-structured and tested. Fill in your specific details inside the brackets and get a professional first draft in seconds. <strong>52% cited lack of practical know-how</strong> as their biggest barrier — this removes it entirely.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Impact-labelled from day one</h3>
+        <p>Prompts are tagged High Impact, Frequently Used, or Under 5 mins so you immediately know what delivers the most value with the least effort. <strong>60% said lack of time</strong> is their top constraint — start with the Under 5 min prompts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     PROMPT CATALOGUE
+════════════════════════════════════════════════════ -->
+<section id="catalogue" class="section-gap">
+  <div class="container">
+
+    <div class="catalogue-header reveal">
+      <div>
+        <div class="section-eyebrow">Prompt Catalogue</div>
+        <h2 class="section-title" style="margin-bottom:0">Find the right prompt for any task</h2>
+      </div>
+      <p class="t-body" style="max-width:300px; text-align:right;">Select your department · filter by category · copy and go.</p>
+    </div>
+
+    <!-- Department rail -->
+    <div class="dept-rail" id="dept-tabs"></div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="cat-pills" id="cat-pills"></div>
+      <div class="filter-divider"></div>
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="search-input" type="text" placeholder="Search prompts…" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Count -->
+    <div class="prompt-count-row">
+      <span id="prompt-count"></span>
+    </div>
+
+    <!-- Grid -->
+    <div class="prompt-grid" id="prompt-grid"></div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     USE CASES
+════════════════════════════════════════════════════ -->
+<section id="use-cases" class="section-gap">
+  <div class="container">
+    <div class="section-hdr reveal">
+      <div class="section-eyebrow" style="color:rgba(255,255,255,.4)">Results</div>
+      <h2 class="section-title" style="color:white">Your colleagues are already saving hours.</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.45)">
+        Real outcomes from real teams. Click any result to open the prompt that made it happen.
+      </p>
+    </div>
+    <div class="cases-grid reveal" id="cases-grid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════════════════ -->
+<section id="how-it-works" class="section-gap">
+  <div class="container">
+    <div class="section-hdr centered reveal">
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title">Four steps. First result in under two minutes.</h2>
+      <p class="section-sub">No training required. No AI background needed. Just your knowledge and these prompts.</p>
+    </div>
+
+    <div class="steps-wrapper reveal">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>Choose your department</h3>
+        <p>Pick your team to filter down to prompts written for your specific context and task types.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <h3>Locate your task</h3>
+        <p>Use category filters or search. Labels tell you what's highest impact and what takes under 5 minutes.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </div>
+        <h3>Copy and customise</h3>
+        <p>One-click copy. Paste into any AI tool, fill in the [brackets] with your specifics, and run.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <h3>Review and send</h3>
+        <p>AI output is a first draft — review it, add your judgement, and sign off. You remain the expert.</p>
+      </div>
+    </div>
+
+    <!-- Behavioural science callout -->
+    <div class="bsci-callout reveal">
+      <div class="bsci-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)">
+          <path d="M9 18h6"/><path d="M10 22h4"/>
+          <path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6l-.7.5V17H9v-1.5l-.7-.5A7 7 0 0 1 12 2z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="bsci-label">Behavioural Science</div>
+        <h3>Build the habit with an implementation intention</h3>
+        <p>
+          Your colleagues told us their biggest barriers are lack of time to learn (60%) and not knowing how to start (52%).
+          The solution isn't another training course. It's a ready-to-use prompt you can copy in under ten seconds.
+          Decide now: <em>"Every time I open a blank document to draft a client deliverable, I check the toolkit first."</em>
+          That one rule compounds into hours saved each month.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="footer-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="14" height="14">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        AI Toolkit
+      </div>
+      <p class="footer-note">
+        <strong>Placeholder data</strong> based on CBRE service lines ·
+        Replace with your company's real prompts before launch ·
+        Internal use only
+      </p>
+      <p class="footer-tip">
+        <span class="footer-tip-icon">💡</span>
+        <strong>Tip:</strong> Try replacing one manual task this week with a prompt above.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay"></div>
+
+<script>
+const DEPARTMENTS = [
+  { id: 'all', name: 'All Departments', icon: 'grid' },
+  { id: 'capital-markets', name: 'Capital Markets', icon: 'trending-up' },
+  { id: 'retail-advisory', name: 'Retail Advisory', icon: 'shopping-bag' },
+  { id: 'property-management', name: 'Property Management', icon: 'building' },
+  { id: 'leasing', name: 'Leasing & Brokerage', icon: 'handshake' },
+  { id: 'valuation', name: 'Valuation & Advisory', icon: 'bar-chart' },
+  { id: 'research', name: 'Research & Analysis', icon: 'search' },
+  { id: 'corporate', name: 'Corporate Solutions', icon: 'briefcase' },
+];
+
+const CATEGORIES = [
+  { id: 'writing',       name: 'Writing & Communication' },
+  { id: 'analysis',      name: 'Analysis & Research' },
+  { id: 'proposal',      name: 'Proposal Development' },
+  { id: 'international', name: 'International Coordination' },
+  { id: 'client-prep',   name: 'Client Preparation' },
+];
+
+const LABEL_TYPES = {
+  'frequently-used': { text: 'Frequently Used', color: 'blue' },
+  'high-impact': { text: 'High Impact', color: 'green' },
+  'under-5': { text: 'Under 5 mins', color: 'purple' },
+};
+
+const PROMPTS = [
+  // ─── GENERAL / TRANSVERSAL ───────────────────────────────────────────────
+  {
+    id: 1,
+    title: 'Executive Summary',
+    category: 'writing',
+    tool: 'copilot',
+    departments: ['all'],
+    labels: ['frequently-used', 'high-impact', 'under-5'],
+    prompt: `Write a concise executive summary (max 250 words) for the following document:\n\n[PASTE DOCUMENT HERE]\n\nStructure it as:\n• Situation: What is the context?\n• Key Findings: Top 3 data points or insights\n• Recommendation: Clear next step\n• Expected Outcome: Measurable result\n\nTone: Professional, direct, senior-leadership ready.`,
+    useCase: {
+      team: 'Retail Advisory',
+      task: 'Executive Summary',
+      result: 'Reduced drafting time by 30%',
+    },
+  },
+  {
+    id: 2,
+    title: 'Professional Email Draft',
+    category: 'writing',
+    tool: 'copilot',
+    departments: ['all'],
+    labels: ['frequently-used', 'under-5'],
+    prompt: `Draft a professional email based on the following context:\n\nPurpose: [e.g. follow-up after site visit / proposal submission / meeting request]\nRecipient: [Client name / Role]\nKey message: [What do you need to convey or ask?]\nTone: [Formal / Warm-professional / Urgent]\n\nKeep it under 150 words. Include a clear subject line. End with a specific call-to-action.`,
+    useCase: null,
+  },
+  {
+    id: 3,
+    title: 'Meeting Notes → Action Items',
+    category: 'proposal',
+    tool: 'copilot',
+    departments: ['all'],
+    labels: ['frequently-used', 'under-5'],
+    prompt: `Convert the following meeting notes into a structured summary:\n\n[PASTE NOTES HERE]\n\nOutput format:\n**Date & Attendees:**\n**Key Decisions Made:**\n**Action Items:** (Owner | Task | Deadline)\n**Open Questions:**\n\nBe concise. Do not invent information not present in the notes.`,
+    useCase: null,
+  },
+  {
+    id: 4,
+    title: 'Data Insight Narrative',
+    category: 'analysis',
+    tool: 'claude',
+    departments: ['all'],
+    labels: ['high-impact'],
+    prompt: `I have the following dataset / metrics:\n\n[PASTE DATA OR TABLE]\n\nWrite a 3-paragraph narrative analysis that:\n1. Explains the trend in plain language\n2. Identifies 2-3 notable outliers or inflection points\n3. Suggests what this means for decision-making\n\nAvoid jargon. Write for a non-technical business audience.`,
+    useCase: null,
+  },
+  {
+    id: 5,
+    title: 'Presentation Slide Outline',
+    category: 'proposal',
+    tool: 'copilot',
+    departments: ['all'],
+    labels: ['frequently-used', 'high-impact'],
+    prompt: `Create a slide-by-slide outline for a [X]-minute presentation on the following topic:\n\nTopic: [e.g. Q3 Market Outlook / Property Portfolio Review]\nAudience: [e.g. C-suite / Client / Internal team]\nGoal: [e.g. Secure approval / Inform / Persuade]\n\nFor each slide provide:\n- Slide title\n- 3 bullet points of content\n- Suggested visual (chart type, image, icon)\n\nKeep the narrative arc: Problem → Evidence → Solution → Call to action.`,
+    useCase: null,
+  },
+  {
+    id: 6,
+    title: 'SWOT Analysis',
+    category: 'international',
+    tool: 'claude',
+    departments: ['all'],
+    labels: ['high-impact'],
+    prompt: `Perform a SWOT analysis for the following:\n\n[DESCRIBE THE ASSET / MARKET / STRATEGY]\n\nFor each quadrant (Strengths, Weaknesses, Opportunities, Threats) provide:\n- 4-5 specific, evidence-based points\n- One standout factor that deserves immediate attention\n\nConclude with a one-paragraph strategic recommendation.`,
+    useCase: null,
+  },
+
+  // ─── CAPITAL MARKETS ─────────────────────────────────────────────────────
+  {
+    id: 7,
+    title: 'Investment Memo Draft',
+    category: 'proposal',
+    tool: 'claude',
+    departments: ['capital-markets'],
+    labels: ['high-impact'],
+    prompt: `Draft an investment memorandum for the following asset:\n\nAsset: [Property name, type, location]\nAsk Price: [Amount]\nKey Financials: [Cap rate, NOI, occupancy]\nInvestment Thesis: [Why is this compelling?]\n\nStructure:\n1. Executive Overview\n2. Market Context (local CRE dynamics)\n3. Asset Quality & Risk Factors\n4. Financial Summary\n5. Recommended Position\n\nWrite for a sophisticated institutional investor. Be factual; flag assumptions clearly.`,
+    useCase: {
+      team: 'Capital Markets',
+      task: 'Investment Memo',
+      result: 'Cut memo prep time from 4 hours to 45 minutes',
+    },
+    detail: {
+      timeSaved: '45 min',
+      timeSavedContext: 'Capital Markets advisors cut memo prep from ~4 hours to under 45 minutes using this as a starting framework.',
+      whenToUse: [
+        'After a site visit, when you need structured documentation before an investment committee meeting.',
+        'When a client or senior stakeholder requests a deal summary on short notice.',
+        'Preparing pitch materials for a new deal and need a professional first draft quickly.',
+        'When you want a consistent memo structure across your team\'s deal documentation.',
+      ],
+      tips: [
+        { title: 'Be specific in the brackets', body: 'The more detail you give — exact financials, tenant name, lease expiry — the less editing the output needs. Vague inputs produce generic memos.' },
+        { title: 'Treat the output as a first draft', body: 'Always verify every figure, yield, and market claim before sending. AI can generate plausible-sounding data it was never given.' },
+        { title: 'Add your market read after', body: 'The Market Context section benefits most from your own judgement. Layer in your on-the-ground insight after generation to make it uniquely yours.' },
+      ],
+    },
+  },
+  {
+    id: 8,
+    title: 'Comparable Transaction Analysis',
+    category: 'analysis',
+    tool: 'ellis',
+    departments: ['capital-markets', 'valuation'],
+    labels: ['frequently-used', 'high-impact'],
+    prompt: `Analyze the following comparable transactions and benchmark them against my subject property:\n\nSubject Property: [Describe]\nComps (paste table or list):\n[PASTE COMPS DATA]\n\nProvide:\n- Price per SF / Cap rate range\n- Market positioning of subject property (above / at / below market)\n- 3 adjustments to consider\n- Suggested pricing narrative for client discussion`,
+    useCase: null,
+  },
+  {
+    id: 9,
+    title: 'Investor Q&A Prep',
+    category: 'client-prep',
+    tool: 'claude',
+    departments: ['capital-markets'],
+    labels: ['frequently-used', 'under-5'],
+    prompt: `I am presenting the following deal to investors:\n\n[Brief deal description]\n\nGenerate the 10 most likely tough questions investors will ask, covering:\n- Financial risk\n- Market conditions\n- Exit strategy\n- Competitive alternatives\n\nFor each question, provide a concise, confident answer (2-3 sentences). Flag any question where I should have backup data ready.`,
+    useCase: null,
+  },
+
+  // ─── RETAIL ADVISORY ─────────────────────────────────────────────────────
+  {
+    id: 10,
+    title: 'Retail Market Snapshot',
+    category: 'analysis',
+    tool: 'ellis',
+    departments: ['retail-advisory'],
+    labels: ['frequently-used', 'high-impact'],
+    prompt: `Write a retail market snapshot for the following area:\n\nLocation: [City / Submarket]\nFocus: [High street / Shopping center / Mixed-use]\nData available: [PASTE any metrics, vacancy rates, footfall data]\n\nOutput:\n- Market headline (1 sentence)\n- Key trends (3 bullets)\n- Occupier demand signals\n- Risk factors\n- Outlook (6-12 month)\n\nWrite in a tone appropriate for a client-facing market report.`,
+    useCase: {
+      team: 'Retail Advisory',
+      task: 'Market Snapshot',
+      result: 'Reports delivered 2 days faster per quarter',
+    },
+  },
+  {
+    id: 11,
+    title: 'Retailer Site Assessment',
+    category: 'client-prep',
+    tool: 'ellis',
+    departments: ['retail-advisory'],
+    labels: ['high-impact'],
+    prompt: `Assess the following site for a retail occupier:\n\nOccupier type: [e.g. Fast fashion / QSR / Luxury]\nSite: [Address, SF, configuration]\nCatchment data: [Population, footfall, competing anchors]\n\nProvide:\n- Fit score (High / Medium / Low) with rationale\n- Top 3 positive factors\n- Top 3 risks\n- Lease recommendation (rent range, key clauses to negotiate)`,
+    useCase: null,
+  },
+  {
+    id: 12,
+    title: 'Tenant Mix Strategy',
+    category: 'analysis',
+    tool: 'claude',
+    departments: ['retail-advisory', 'property-management'],
+    labels: ['high-impact'],
+    prompt: `Develop a tenant mix strategy for the following retail asset:\n\nAsset: [Type, size, location]\nCurrent vacancy: [%]\nExisting anchors: [List]\nTarget customer: [Demographics]\n\nRecommend:\n- Ideal category breakdown (% by GLA)\n- 5-8 target tenants per category (realistic operators for this market)\n- 1 "experience" concept to drive footfall\n- Phasing priority (what to fill first and why)`,
+    useCase: null,
+  },
+
+  // ─── PROPERTY MANAGEMENT ─────────────────────────────────────────────────
+  {
+    id: 13,
+    title: 'Maintenance Request Response',
+    category: 'client-prep',
+    tool: 'copilot',
+    departments: ['property-management'],
+    labels: ['frequently-used', 'under-5'],
+    prompt: `Draft a professional response to the following tenant maintenance request:\n\nRequest: [Describe the issue]\nStatus: [Received / Scheduled / In progress / Resolved]\nExpected resolution: [Date or timeframe]\n\nTone: Empathetic, clear, professional. Reassure the tenant, state the next step, and provide a contact for follow-up. Max 100 words.`,
+    useCase: null,
+  },
+  {
+    id: 14,
+    title: 'Monthly Property Report',
+    category: 'proposal',
+    tool: 'copilot',
+    departments: ['property-management'],
+    labels: ['frequently-used', 'high-impact'],
+    prompt: `Write a monthly property management report for the owner using the following data:\n\nProperty: [Name, type]\nPeriod: [Month/Year]\nOccupancy: [%]\nRent collected: [% and amount]\nMaintenance items: [List open and closed]\nIncidents: [Any notable events]\n\nFormat:\n- Performance Summary (3 bullets)\n- Financial Snapshot\n- Operations Update\n- Upcoming Actions\n\nTone: Transparent, factual, owner-focused.`,
+    useCase: {
+      team: 'Property Management',
+      task: 'Monthly Owner Report',
+      result: 'Standardized reporting across 40+ assets',
+    },
+  },
+  {
+    id: 15,
+    title: 'Lease Renewal Negotiation Brief',
+    category: 'proposal',
+    tool: 'claude',
+    departments: ['property-management', 'leasing'],
+    labels: ['high-impact'],
+    prompt: `Prepare a negotiation brief for the following lease renewal:\n\nTenant: [Name, sector]\nCurrent lease: [Expiry, rent, SF]\nMarket rent estimate: [Range]\nTenant payment history: [Good / Issues / Arrears]\nStrategic priority: [Retain / Negotiate increase / Let expire]\n\nOutput:\n- Our opening position\n- Minimum acceptable terms\n- 3 concessions we can offer\n- Likely tenant objections + rebuttals\n- Walk-away scenario`,
+    useCase: null,
+  },
+
+  // ─── LEASING & BROKERAGE ─────────────────────────────────────────────────
+  {
+    id: 16,
+    title: 'Property Listing Description',
+    category: 'writing',
+    tool: 'copilot',
+    departments: ['leasing'],
+    labels: ['frequently-used', 'under-5'],
+    prompt: `Write a compelling property listing description for the following:\n\nProperty: [Address, type, SF]\nKey features: [Floor plate, amenities, spec, transport]\nTarget occupier: [Tech company / Law firm / etc.]\nAsking rent: [£/$/€ per SF]\n\nWrite two versions:\n1. Short (50 words) — for portals and social media\n2. Long (150 words) — for brochures and marketing packs\n\nHighlight unique selling points first. No filler phrases like "rare opportunity."`,
+    useCase: null,
+  },
+  {
+    id: 17,
+    title: 'Client Requirements Brief',
+    category: 'client-prep',
+    tool: 'copilot',
+    departments: ['leasing'],
+    labels: ['frequently-used', 'under-5'],
+    prompt: `Convert the following client conversation notes into a structured requirements brief:\n\n[PASTE NOTES / TRANSCRIPT]\n\nOutput:\n- Occupier profile\n- Space requirements (SF range, configuration)\n- Location priorities (must-have vs. nice-to-have)\n- Budget / rent sensitivity\n- Key decision criteria\n- Timeline & process\n- Red flags or sensitivities to be aware of\n\nThis brief will be shared with the search team.`,
+    useCase: null,
+  },
+  {
+    id: 18,
+    title: 'Deal Pipeline Status Update',
+    category: 'proposal',
+    tool: 'copilot',
+    departments: ['leasing', 'capital-markets'],
+    labels: ['frequently-used'],
+    prompt: `Write a pipeline status update for the following deals:\n\n[PASTE DEAL LIST WITH STAGE INFO]\n\nFor each deal provide a one-line status update in this format:\n[Property] — [Stage] — [Next action] — [Probability %] — [Expected close]\n\nThen write a 3-bullet summary for leadership highlighting:\n- Deals most likely to close this quarter\n- Deals at risk\n- Any resource or decision needs`,
+    useCase: null,
+  },
+
+  // ─── VALUATION & ADVISORY ────────────────────────────────────────────────
+  {
+    id: 19,
+    title: 'Valuation Rationale Summary',
+    category: 'writing',
+    tool: 'claude',
+    departments: ['valuation'],
+    labels: ['high-impact'],
+    prompt: `Summarise the valuation rationale for the following property:\n\nProperty: [Type, location, size]\nValuation: [Amount]\nMethod used: [Income / Comparable / Cost]\nKey assumptions: [Yield, ERV, vacancy, capex]\n\nWrite a 200-word rationale suitable for a valuation certificate or client letter. Cover:\n- Market context\n- Method justification\n- Key value drivers\n- Caveats and risk factors`,
+    useCase: null,
+  },
+  {
+    id: 20,
+    title: 'Market Yield Analysis',
+    category: 'international',
+    tool: 'ellis',
+    departments: ['valuation', 'capital-markets'],
+    labels: ['high-impact'],
+    prompt: `Analyse current market yields for the following sector and geography:\n\nSector: [Office / Industrial / Retail / Residential]\nGeography: [City / Region]\nAvailable data: [PASTE any benchmark data]\n\nProvide:\n- Current prime yield vs. secondary yield spread\n- Direction of travel (hardening / softening / stable)\n- Key drivers of yield movement\n- Comparable markets for context\n- Outlook narrative (100 words)`,
+    useCase: null,
+  },
+
+  // ─── RESEARCH & ANALYSIS ─────────────────────────────────────────────────
+  {
+    id: 21,
+    title: 'Market Research Report Section',
+    category: 'analysis',
+    tool: 'ellis',
+    departments: ['research'],
+    labels: ['frequently-used', 'high-impact'],
+    prompt: `Write a research report section on the following topic:\n\nTopic: [e.g. Logistics & Industrial Market — Q2 2025]\nGeography: [Region/City]\nKey data points I have: [PASTE DATA]\nAudience: [Investors / Occupiers / Internal]\n\nStructure:\n- Headline trend (1 powerful sentence)\n- Supply & demand dynamics\n- Rental/pricing movement\n- Leasing activity highlights\n- Outlook\n\n300-400 words. Data-led, minimal opinion unless clearly flagged as analysis.`,
+    useCase: {
+      team: 'Research',
+      task: 'Quarterly Market Report',
+      result: 'First draft ready in 20 minutes vs. 2 hours',
+    },
+  },
+  {
+    id: 22,
+    title: 'Competitor Intelligence Brief',
+    category: 'international',
+    tool: 'claude',
+    departments: ['research'],
+    labels: ['high-impact'],
+    prompt: `Compile a competitor intelligence brief based on the following sources:\n\n[PASTE news articles, press releases, or public data]\n\nOutput:\n- Summary of key competitor moves (3-5 bullets)\n- Strategic implications for our business\n- Market opportunities their activity opens up\n- Recommended response or monitoring actions\n\nFocus on what matters commercially, not just activity volume.`,
+    useCase: null,
+  },
+
+  // ─── CORPORATE SOLUTIONS ─────────────────────────────────────────────────
+  {
+    id: 23,
+    title: 'Workplace Strategy Summary',
+    category: 'writing',
+    tool: 'claude',
+    departments: ['corporate'],
+    labels: ['high-impact'],
+    prompt: `Summarize a workplace strategy recommendation for the following client:\n\nCompany: [Sector, headcount, current footprint]\nObjectives: [Cost reduction / Collaboration / Flexibility]\nData: [Occupancy data, employee survey results if available]\n\nRecommend:\n- Optimal space model (HQ + hub / fully flexible / etc.)\n- Target SF range and rationale\n- Key design principles\n- Implementation phasing\n- Expected outcomes (quantified where possible)`,
+    useCase: {
+      team: 'Corporate Solutions',
+      task: 'Workplace Strategy',
+      result: 'Proposal win rate improved; clients cited clarity of recommendation',
+    },
+  },
+  {
+    id: 24,
+    title: 'Portfolio Rationalisation Analysis',
+    category: 'analysis',
+    tool: 'claude',
+    departments: ['corporate'],
+    labels: ['high-impact'],
+    prompt: `Analyse the following real estate portfolio for rationalisation opportunities:\n\n[PASTE portfolio list: location, SF, lease expiry, cost, utilisation %]\n\nIdentify:\n- Assets to exit (low utilisation + high cost or near expiry)\n- Assets to right-size\n- Assets to retain / invest in\n- Estimated savings from recommended changes\n\nPresent findings in a decision matrix format. Flag any dependencies (e.g. key talent locations, contractual constraints).`,
+    useCase: null,
+  },
+  {
+    id: 25,
+    title: 'Client Proposal Introduction',
+    category: 'writing',
+    tool: 'claude',
+    departments: ['corporate', 'leasing', 'capital-markets'],
+    labels: ['frequently-used'],
+    prompt: `Write the introduction section for a client proposal:\n\nClient: [Company name, sector]\nOur service offering: [What we are proposing]\nClient's stated challenge: [What they told us]\nOur differentiator: [Why us over competitors]\n\n150 words max. Open with the client's challenge (not our credentials). Show we understand their world. End with a bridge sentence to the rest of the proposal.`,
+    useCase: null,
+  },
+];
+
+const USE_CASES = [
+  {
+    id: 1,
+    team: 'Retail Advisory',
+    task: 'Executive Summary',
+    result: 'Reduced drafting time by 30%',
+    detail: 'The team used the Executive Summary prompt on weekly deal memos. What previously required a 45-minute drafting session became a 10-minute review-and-refine workflow.',
+    metric: '30%',
+    metricLabel: 'time saved',
+    promptId: 1,
+  },
+  {
+    id: 2,
+    team: 'Capital Markets',
+    task: 'Investment Memorandum',
+    result: 'Cut prep time from 4 hours to 45 minutes',
+    detail: 'Advisors used the Investment Memo prompt as a starting framework, then layered in proprietary data. Client-ready memos went out same day instead of the following morning.',
+    metric: '5×',
+    metricLabel: 'faster output',
+    promptId: 7,
+  },
+  {
+    id: 3,
+    team: 'Property Management',
+    task: 'Monthly Owner Reports',
+    result: 'Standardised reporting across 40+ assets',
+    detail: 'The PM team templated the Monthly Property Report prompt with asset-specific data fields. Reports are now consistent in format and tone, improving owner satisfaction scores.',
+    metric: '40+',
+    metricLabel: 'assets standardised',
+    promptId: 14,
+  },
+  {
+    id: 4,
+    team: 'Research',
+    task: 'Quarterly Market Report',
+    result: 'First draft ready in 20 minutes vs. 2 hours',
+    detail: 'Research analysts run data through the Market Research Report Section prompt to generate a structured first draft. Editing a draft is 6× faster than writing from scratch.',
+    metric: '20 min',
+    metricLabel: 'first draft',
+    promptId: 21,
+  },
+  {
+    id: 5,
+    team: 'Corporate Solutions',
+    task: 'Workplace Strategy Proposal',
+    result: 'Higher proposal win rate',
+    detail: 'Account managers used the Workplace Strategy Summary prompt to sharpen recommendations before client presentations. Clients consistently noted the clarity and structure of proposals.',
+    metric: '↑ Win rate',
+    metricLabel: 'proposal quality',
+    promptId: 23,
+  },
+];
+
+</script>
+<script>
+// ─── STATE ────────────────────────────────────────────────────────────────
+const state = { dept: 'all', cat: 'all', search: '' };
+
+// ─── INLINE SVG ICONS ────────────────────────────────────────────────────
+const ICONS = {
+  grid:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  'trend-up': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+  bag:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
+  building:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><line x1="9" y1="7" x2="9.01" y2="7"/><line x1="15" y1="7" x2="15.01" y2="7"/></svg>`,
+  key:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>`,
+  chart:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>`,
+  search:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  briefcase:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>`,
+  copy:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`,
+  check:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
+  eye:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  x:          `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  arrow:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
+  star:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+};
+
+const DEPT_ICONS = {
+  'all': 'grid', 'capital-markets': 'trend-up', 'retail-advisory': 'bag',
+  'property-management': 'building', 'leasing': 'key',
+  'valuation': 'chart', 'research': 'search', 'corporate': 'briefcase',
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────
+function esc(str) {
+  return str
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function labelHTML(key) {
+  const map = {
+    'frequently-used': ['label-blue',   'Frequently Used'],
+    'high-impact':     ['label-green',  'High Impact'],
+    'under-5':         ['label-purple', 'Under 5 mins'],
+  };
+  const [cls, text] = map[key] || ['',''];
+  return `<span class="label ${cls}">${text}</span>`;
+}
+
+const TOOL_META = {
+  copilot: { label: 'Copilot',  cls: 'tool-copilot' },
+  ellis:   { label: 'Ellis AI', cls: 'tool-ellis'   },
+  claude:  { label: 'Claude',   cls: 'tool-claude'  },
+};
+
+function toolBadge(tool) {
+  const t = TOOL_META[tool];
+  if (!t) return '';
+  return `<span class="tool-badge ${t.cls}">${t.label}</span>`;
+}
+
+function copyText(text, btn, origHTML) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = `${ICONS.check} Copied!`;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = origHTML; }, 2200);
+  });
+}
+
+function filtered() {
+  return PROMPTS.filter(p => {
+    const dOk = state.dept === 'all' || p.departments.includes('all') || p.departments.includes(state.dept);
+    const cOk = state.cat  === 'all' || p.category === state.cat;
+    const q   = state.search.toLowerCase();
+    const sOk = !q || p.title.toLowerCase().includes(q) ||
+                p.prompt.toLowerCase().includes(q) ||
+                (CATEGORIES.find(c => c.id === p.category)?.name.toLowerCase().includes(q));
+    return dOk && cOk && sOk;
+  });
+}
+
+// ─── RENDER: DEPT TABS ───────────────────────────────────────────────────
+function renderDeptTabs() {
+  document.getElementById('dept-tabs').innerHTML = DEPARTMENTS.map(d => `
+    <button class="dept-tab${d.id === state.dept ? ' active' : ''}" onclick="setDept('${d.id}')">
+      ${ICONS[DEPT_ICONS[d.id]] || ''} ${d.name}
+    </button>`).join('');
+}
+
+// ─── RENDER: CAT PILLS ───────────────────────────────────────────────────
+function renderCatPills() {
+  const all = `<button class="cat-pill${state.cat === 'all' ? ' active' : ''}" onclick="setCat('all')">All Categories</button>`;
+  const pills = CATEGORIES.map(c =>
+    `<button class="cat-pill${c.id === state.cat ? ' active' : ''}" onclick="setCat('${c.id}')">${c.name}</button>`
+  ).join('');
+  document.getElementById('cat-pills').innerHTML = all + pills;
+}
+
+// ─── RENDER: PROMPT GRID ─────────────────────────────────────────────────
+function renderGrid() {
+  const list = filtered();
+  const grid = document.getElementById('prompt-grid');
+  const count = document.getElementById('prompt-count');
+
+  count.textContent = `${list.length} prompt${list.length !== 1 ? 's' : ''}`;
+
+  if (list.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">${ICONS.search}</div>
+        <h3>No prompts match your filters</h3>
+        <p>Try a different department, category, or search term.</p>
+      </div>`;
+    return;
+  }
+
+  const cards = list.map((p, i) => {
+    const catName  = CATEGORIES.find(c => c.id === p.category)?.name || '';
+    const labels   = p.labels.map(labelHTML).join('');
+    const preview  = p.prompt.replace(/\n/g,' ').slice(0, 130) + '…';
+    const impact   = p.useCase ? `
+      <div class="card-impact">
+        ${ICONS.star}
+        <span>${p.useCase.team} &mdash; ${p.useCase.result}</span>
+      </div>` : '';
+
+    return `
+      <div class="prompt-card" style="animation-delay:${i * 25}ms">
+        <div class="card-header">
+          <div class="card-title">${p.title}</div>
+          <div class="card-header-meta">
+            <div class="card-category">${catName}</div>
+            ${toolBadge(p.tool)}
+          </div>
+        </div>
+        <div class="card-labels">${labels}</div>
+        <div class="card-preview">${esc(preview)}</div>
+        ${impact}
+        <div class="card-actions">
+          <button class="btn-card-copy" data-id="${p.id}" onclick="handleCardCopy(event,${p.id})">
+            ${ICONS.copy} Copy Prompt
+          </button>
+          <button class="btn-card-view" onclick="openModal(${p.id})">
+            ${ICONS.eye} View
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+
+  const comingSoon = state.dept !== 'all' ? `
+    <div class="coming-soon-tile">
+      <div class="coming-soon-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="coming-soon-body">
+        <div class="coming-soon-title">Full prompt library coming soon</div>
+        <div class="coming-soon-sub">Content is being finalised with the CBRE team. Additional task guides, worked examples, and role-specific prompts will be added here shortly.</div>
+      </div>
+      <div class="coming-soon-badge">In progress</div>
+    </div>` : '';
+
+  grid.innerHTML = cards + comingSoon;
+}
+
+// ─── COPY FROM CARD ──────────────────────────────────────────────────────
+function handleCardCopy(e, id) {
+  const p = PROMPTS.find(x => x.id === id);
+  if (!p) return;
+  const btn = e.currentTarget;
+  copyText(p.prompt, btn, `${ICONS.copy} Copy Prompt`);
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────
+function openModal(id) {
+  const p = PROMPTS.find(x => x.id === id);
+  if (!p) return;
+
+  const overlay = document.getElementById('modal-overlay');
+
+  if (p.detail) {
+    overlay.innerHTML = buildDetailModal(p, id);
+  } else {
+    overlay.innerHTML = buildStandardModal(p, id);
+  }
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // re-attach backdrop-click listener after innerHTML replace
+  overlay.onclick = e => { if (e.target === overlay) closeModal(); };
+}
+
+function buildStandardModal(p, id) {
+  const catName = CATEGORIES.find(c => c.id === p.category)?.name || '';
+  const labels  = p.labels.map(labelHTML).join('');
+  const impactBlock = p.useCase ? `
+    <div class="modal-impact">
+      <div class="modal-impact-header">${ICONS.star} Real-world impact</div>
+      <div class="modal-impact-grid">
+        <div><div class="modal-impact-item-label">Team</div><div class="modal-impact-item-value">${p.useCase.team}</div></div>
+        <div><div class="modal-impact-item-label">Task</div><div class="modal-impact-item-value">${p.useCase.task}</div></div>
+        <div><div class="modal-impact-item-label">Result</div><div class="modal-impact-item-value">${p.useCase.result}</div></div>
+      </div>
+    </div>` : '';
+
+  return `<div class="modal" role="dialog" aria-modal="true">
+    <div id="modal-content">
+      <div class="modal-top">
+        <div class="modal-top-left">
+          <div class="modal-title">${p.title}</div>
+          <div class="modal-top-meta">
+            <div class="modal-cat">${catName}</div>
+            ${toolBadge(p.tool)}
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">${ICONS.x}</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-labels">${labels}</div>
+        ${impactBlock}
+        <div class="modal-prompt-label">Prompt</div>
+        <div class="modal-prompt-box">${esc(p.prompt)}</div>
+        <div class="modal-actions">
+          <button class="modal-btn-copy" id="modal-copy-btn" onclick="handleModalCopy(${id})">
+            ${ICONS.copy} Copy Prompt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildDetailModal(p, id) {
+  const d       = p.detail;
+  const catName = CATEGORIES.find(c => c.id === p.category)?.name || '';
+  const dept    = DEPARTMENTS.find(dep => p.departments.includes(dep.id) && dep.id !== 'all');
+
+  const whenItems = d.whenToUse.map(w =>
+    `<li><div class="dm-when-dot"></div>${w}</li>`
+  ).join('');
+
+  const tipItems = d.tips.map((t, i) =>
+    `<div class="dm-tip">
+      <div class="dm-tip-num">${i + 1}</div>
+      <div><strong>${t.title}.</strong> ${t.body}</div>
+    </div>`
+  ).join('');
+
+  return `<div class="modal modal-detail" role="dialog" aria-modal="true">
+    <!-- sticky header -->
+    <div class="modal-top dm-top">
+      <div class="modal-top-left">
+        <div class="dm-breadcrumb">${dept ? dept.name : ''} &rsaquo; ${catName}</div>
+        <div class="modal-title">${p.title}</div>
+        <div class="modal-top-meta">
+          ${toolBadge(p.tool)}
+          <span class="dm-time-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Saves ~${d.timeSaved}
+          </span>
+          <span class="dm-sample-pill">Sample detail view</span>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">${ICONS.x}</button>
+    </div>
+
+    <!-- two-column body -->
+    <div class="dm-grid">
+
+      <!-- LEFT -->
+      <div class="dm-col dm-col-left">
+
+        <div class="dm-section">
+          <div class="dm-section-label">${ICONS.copy} The Prompt</div>
+          <div class="dm-prompt-box">${esc(p.prompt)}</div>
+          <button class="modal-btn-copy dm-copy-btn" id="modal-copy-btn" onclick="handleModalCopy(${id})">
+            ${ICONS.copy} Copy Prompt
+          </button>
+        </div>
+
+        <div class="dm-section">
+          <div class="dm-section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            When to use this
+          </div>
+          <ul class="dm-when-list">${whenItems}</ul>
+        </div>
+
+        <div class="dm-section">
+          <div class="dm-section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 017 7c0 2.5-1.3 4.7-3.3 6l-.7.5V17H9v-1.5l-.7-.5A7 7 0 0112 2z"/></svg>
+            Tips for better results
+          </div>
+          <div class="dm-tips">${tipItems}</div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="dm-col dm-col-right">
+
+        <div class="dm-time-block">
+          <div class="dm-time-value">${d.timeSaved}</div>
+          <div class="dm-time-text">${d.timeSavedContext}</div>
+        </div>
+
+        <div class="dm-output-card">
+          <div class="dm-output-header">
+            <span class="dm-output-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Example Output
+            </span>
+            <span class="dm-output-badge">Illustrative only</span>
+          </div>
+          <div class="dm-output-body">
+            <div class="dm-doc-title">Investment Memorandum</div>
+            <div class="dm-doc-meta">Meridian Business Park, Unit 4A &middot; Manchester, UK &middot; Draft for review</div>
+            <div class="dm-kv-grid">
+              <div class="dm-kv"><div class="dm-kv-label">Asking Price</div><div class="dm-kv-value">£42.5m</div></div>
+              <div class="dm-kv"><div class="dm-kv-label">Net Initial Yield</div><div class="dm-kv-value">5.25%</div></div>
+              <div class="dm-kv"><div class="dm-kv-label">Occupancy</div><div class="dm-kv-value">100%</div></div>
+              <div class="dm-kv"><div class="dm-kv-label">NOI p.a.</div><div class="dm-kv-value">£2.23m</div></div>
+              <div class="dm-kv"><div class="dm-kv-label">Lease Expiry</div><div class="dm-kv-value">2031</div></div>
+              <div class="dm-kv"><div class="dm-kv-label">5-yr IRR</div><div class="dm-kv-value">8.4%</div></div>
+            </div>
+            <div class="dm-output-section">
+              <div class="dm-output-section-title">1. Executive Overview</div>
+              <p>Meridian Business Park presents a compelling core logistics acquisition with an institutional-grade tenant covenant and a net initial yield of 5.25% — 25 bps above comparable prime logistics assets in the region. The 7-year unexpired lease provides income security while the Manchester Airport Corridor location positions the asset for above-average rental growth.</p>
+            </div>
+            <div class="dm-output-section">
+              <div class="dm-output-section-title">2. Market Context</div>
+              <p>Greater Manchester logistics continues to outperform the UK average, driven by e-commerce demand and constrained Grade A supply. Corridor vacancy stands at 2.3%; rents have grown 12% over 24 months. Six transactions above £30m completed in the sub-market in H1 2025.</p>
+            </div>
+            <div class="dm-output-section">
+              <div class="dm-output-section-title">3. Asset Quality &amp; Risk Factors</div>
+              <p>Refurbished 2021 to EPC A. Roof solar generates c.£180k annual savings. <strong>Key risk:</strong> single-tenant concentration and lease event in 2031, mitigated by 15-year operational history and recent tenant capex.</p>
+            </div>
+            <div class="dm-output-section">
+              <div class="dm-output-section-title">4. Financial Summary</div>
+              <table class="dm-table">
+                <tr><td>Asking Price</td><td>£42,500,000</td></tr>
+                <tr><td>Net Initial Yield</td><td>5.25%</td></tr>
+                <tr><td>Reversionary Yield</td><td>5.75%</td></tr>
+                <tr><td>Annual NOI</td><td>£2,231,250</td></tr>
+                <tr><td>5-yr IRR (base case)</td><td>8.4%</td></tr>
+              </table>
+            </div>
+            <div class="dm-output-section">
+              <div class="dm-output-section-title">5. Recommended Position</div>
+              <p>Proceed to due diligence at asking price. Strong fit for a core/core-plus mandate. Recommend commissioning a re-letting feasibility study as part of DD to address the 2031 lease event.</p>
+              <p class="dm-assumption">Assumptions: 5-yr hold &middot; 10 bps yield compression &middot; 3% p.a. rental growth &middot; 5% exit costs.</p>
+            </div>
+            <div class="dm-disclaimer">⚠ AI-generated draft — verify all figures and market data before use.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>`;
+}
+
+function closeModal() {
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleModalCopy(id) {
+  const p   = PROMPTS.find(x => x.id === id);
+  const btn = document.getElementById('modal-copy-btn');
+  if (p && btn) copyText(p.prompt, btn, `${ICONS.copy} Copy Prompt`);
+}
+
+// ─── FILTERS ─────────────────────────────────────────────────────────────
+function setDept(id) {
+  state.dept = id;
+  renderDeptTabs();
+  renderGrid();
+}
+
+function setCat(id) {
+  state.cat = id;
+  renderCatPills();
+  renderGrid();
+}
+
+// ─── USE CASES ────────────────────────────────────────────────────────────
+function renderUseCases() {
+  document.getElementById('cases-grid').innerHTML = USE_CASES.map(c => `
+    <div class="case-card" onclick="openModal(${c.promptId})">
+      <div>
+        <div class="case-metric">${c.metric}</div>
+        <div class="case-metric-sub">${c.metricLabel}</div>
+      </div>
+      <div class="case-dept-tag">${c.team}</div>
+      <div class="case-task">${c.task}</div>
+      <div class="case-detail">${c.detail}</div>
+      <span class="case-cta">Open prompt ${ICONS.arrow}</span>
+    </div>`).join('');
+}
+
+// ─── SCROLL ANIMATIONS ───────────────────────────────────────────────────
+function initScrollReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ─── NAV SCROLL SHADOW ───────────────────────────────────────────────────
+function initNav() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // Active section highlight
+  const sections = document.querySelectorAll('section[id]');
+  const links    = document.querySelectorAll('.nav-links a[href^="#"]');
+  const sObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { threshold: 0.45 });
+  sections.forEach(s => sObs.observe(s));
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderDeptTabs();
+  renderCatPills();
+  renderGrid();
+  renderUseCases();
+  initScrollReveal();
+  initNav();
+
+  // Update hero stat to reflect real prompt count
+  const el = document.getElementById('stat-prompts');
+  if (el) el.textContent = PROMPTS.length;
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', e => {
+    state.search = e.target.value;
+    renderGrid();
+  });
+
+  // Modal close: backdrop click + ESC
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // Smooth scroll for all anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+});
+
+</script>
+</body>
+</html>
