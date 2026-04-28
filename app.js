@@ -413,24 +413,30 @@ function initScrollReveal() {
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 }
 
-// ─── NAV SCROLL SHADOW ───────────────────────────────────────────────────
+// ─── NAV SCROLL SHADOW + ACTIVE SECTION ─────────────────────────────────
 function initNav() {
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 10);
-  }, { passive: true });
 
-  // Active section highlight
-  const sections = document.querySelectorAll('section[id]');
-  const links    = document.querySelectorAll('.nav-links a[href^="#"]');
-  const sObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
-      }
+  function updateNav() {
+    const scrollY = window.scrollY;
+    nav.classList.toggle('scrolled', scrollY > 10);
+
+    // find the section whose top is at or above the middle of the viewport
+    const sections = document.querySelectorAll('section[id]');
+    const links    = document.querySelectorAll('.nav-links a[href^="#"]');
+    const mid      = scrollY + window.innerHeight * 0.35;
+
+    let current = '';
+    sections.forEach(s => { if (s.offsetTop <= mid) current = s.id; });
+
+    links.forEach(l => {
+      const active = l.getAttribute('href') === '#' + current;
+      l.classList.toggle('active', active);
     });
-  }, { threshold: 0.45 });
-  sections.forEach(s => sObs.observe(s));
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────

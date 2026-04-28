@@ -177,7 +177,7 @@ body {
   transition:color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .nav-links a:hover { color:var(--ink); background:var(--ink-05); }
-.nav-links a.active { color:var(--ink); }
+.nav-links a.active { color:var(--ink); font-weight:700; }
 
 .nav-cta-btn {
   display:inline-flex;
