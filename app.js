@@ -423,7 +423,7 @@ function initNav() {
 
     // find the section whose top is at or above the middle of the viewport
     const sections = document.querySelectorAll('section[id]');
-    const links    = document.querySelectorAll('.nav-links a[href^="#"]');
+    const links    = document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta-btn)');
     const mid      = scrollY + window.innerHeight * 0.35;
 
     let current = '';
