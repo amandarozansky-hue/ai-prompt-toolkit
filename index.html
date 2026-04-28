@@ -26,6 +26,7 @@
   </a>
   <ul class="nav-links">
     <li><a href="#catalogue">Prompts</a></li>
+    <li><a href="#ai-tools">Tools</a></li>
     <li><a href="#use-cases">Use Cases</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#catalogue" class="nav-cta-btn">
@@ -194,6 +195,80 @@
         <h3>Impact-labelled from day one</h3>
         <p>Prompts are tagged High Impact, Frequently Used, or Under 5 mins so you immediately know what delivers the most value with the least effort. <strong>60% said lack of time</strong> is their top constraint — start with the Under 5 min prompts.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     AI TOOLS
+════════════════════════════════════════════════════ -->
+<section id="ai-tools" class="section-gap">
+  <div class="container">
+
+    <div class="section-hdr centered reveal">
+      <div class="section-eyebrow">AI Tools</div>
+      <h2 class="section-title">Three tools to write better prompts</h2>
+      <p class="section-sub">Optimize a weak prompt, generate ideas from a goal, or revisit your saved favourites.</p>
+    </div>
+
+    <div class="tools-shell reveal">
+
+      <!-- Tab strip -->
+      <div class="tools-tab-strip">
+        <button class="tools-tab active" data-tab="optimizer" onclick="switchToolsTab('optimizer')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          Prompt Optimizer
+        </button>
+        <button class="tools-tab" data-tab="generator" onclick="switchToolsTab('generator')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Goal → Prompts
+        </button>
+        <button class="tools-tab" data-tab="saved" onclick="switchToolsTab('saved')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          Saved
+          <span class="saved-tab-badge" id="saved-tab-badge" style="display:none">0</span>
+        </button>
+      </div>
+
+      <!-- ── Optimizer panel ── -->
+      <div id="tool-optimizer" class="tools-panel active">
+        <div class="opt-layout">
+          <div class="opt-input-side">
+            <div class="tool-field-label">Your draft prompt</div>
+            <textarea id="opt-input" class="tool-textarea" rows="9" placeholder="Paste any prompt here — rough, one-line, or half-formed — and we'll improve it using prompt engineering best practices."></textarea>
+            <button class="btn btn-dark" onclick="runOptimizer()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+              Optimize Prompt
+            </button>
+          </div>
+          <div class="opt-output-side">
+            <div id="opt-output"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Generator panel ── -->
+      <div id="tool-generator" class="tools-panel">
+        <div class="gen-layout">
+          <div class="gen-input-row">
+            <div class="tool-field-label">What's your goal?</div>
+            <div class="gen-input-wrap">
+              <input id="gen-input" type="text" class="tool-input" placeholder="e.g. write a logistics investment memo, get a promotion, analyse market trends…" />
+              <button class="btn btn-dark" onclick="runGenerator()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Generate
+              </button>
+            </div>
+          </div>
+          <div id="gen-output" class="gen-cards-grid"></div>
+        </div>
+      </div>
+
+      <!-- ── Saved panel ── -->
+      <div id="tool-saved" class="tools-panel">
+        <div id="saved-panel-content"></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -369,5 +444,6 @@
 
 <script src="data.js"></script>
 <script src="app.js"></script>
+<script src="tools.js"></script>
 </body>
 </html>

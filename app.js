@@ -17,6 +17,8 @@ const ICONS = {
   x:          `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
   arrow:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
   star:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  bookmark:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+  sparkle:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>`,
 };
 
 const DEPT_ICONS = {
@@ -135,6 +137,9 @@ function renderGrid() {
           <button class="btn-card-copy" data-id="${p.id}" onclick="handleCardCopy(event,${p.id})">
             ${ICONS.copy} Copy Prompt
           </button>
+          <button class="btn-card-save" data-save-id="${p.id}" onclick="saveFromCatalogue(${p.id})" title="Save prompt">
+            ${ICONS.bookmark}
+          </button>
           <button class="btn-card-view" onclick="openModal(${p.id})">
             ${ICONS.eye} View
           </button>
@@ -221,6 +226,9 @@ function buildStandardModal(p, id) {
         <div class="modal-actions">
           <button class="modal-btn-copy" id="modal-copy-btn" onclick="handleModalCopy(${id})">
             ${ICONS.copy} Copy Prompt
+          </button>
+          <button class="modal-btn-save" onclick="saveFromCatalogue(${id})">
+            ${ICONS.bookmark} Save
           </button>
         </div>
       </div>
