@@ -151,7 +151,7 @@ function renderDeptTabs() {
 }
 
 // ─── RENDER: CAT PILLS ───────────────────────────────────────────────────
-const CAT_TRANS = { writing:'cat_writing', analysis:'cat_analysis', client:'cat_client', data:'cat_data', visual:'cat_visual' };
+const CAT_TRANS = { writing:'cat_writing', analysis:'cat_analysis', client:'cat_client', data:'cat_data', visual:'cat_visual', proposal:'cat_proposal', international:'cat_international', 'client-prep':'cat_client_prep' };
 
 function renderCatPills() {
   const all = `<button class="cat-pill${state.cat === 'all' ? ' active' : ''}" onclick="setCat('all')">${t('cat_all')}</button>`;
@@ -185,7 +185,7 @@ function renderGrid() {
   const hidden  = list.length - visible.length;
 
   const buildCard = (p, i) => {
-    const catName   = CATEGORIES.find(c => c.id === p.category)?.name || '';
+    const catName   = (CAT_TRANS[p.category] ? t(CAT_TRANS[p.category]) : null) || CATEGORIES.find(c => c.id === p.category)?.name || '';
     const labels    = p.labels.map(labelHTML).join('');
     const preview   = p.prompt.replace(/\n/g,' ').slice(0, 130) + '…';
     const isSaved   = isStarred(p.id);
@@ -300,7 +300,7 @@ function openModal(id) {
 }
 
 function buildStandardModal(p, id) {
-  const catName = CATEGORIES.find(c => c.id === p.category)?.name || '';
+  const catName = (CAT_TRANS[p.category] ? t(CAT_TRANS[p.category]) : null) || CATEGORIES.find(c => c.id === p.category)?.name || '';
   const labels  = p.labels.map(labelHTML).join('');
   const impactBlock = p.useCase ? `
     <div class="modal-impact">
@@ -356,7 +356,7 @@ function buildStandardModal(p, id) {
 
 function buildDetailModal(p, id) {
   const d       = p.detail;
-  const catName = CATEGORIES.find(c => c.id === p.category)?.name || '';
+  const catName = (CAT_TRANS[p.category] ? t(CAT_TRANS[p.category]) : null) || CATEGORIES.find(c => c.id === p.category)?.name || '';
   const dept    = DEPARTMENTS.find(dep => p.departments.includes(dep.id) && dep.id !== 'all');
 
   const whenItems = d.whenToUse.map(w =>
@@ -520,17 +520,21 @@ function setCat(id) {
 
 // ─── USE CASES ────────────────────────────────────────────────────────────
 function renderUseCases() {
-  document.getElementById('cases-grid').innerHTML = USE_CASES.map(c => `
+  const ucTrans = (typeof t === 'function') ? t('use_cases') : null;
+  document.getElementById('cases-grid').innerHTML = USE_CASES.map((c, i) => {
+    const tr = (Array.isArray(ucTrans) && ucTrans[i]) ? ucTrans[i] : {};
+    return `
     <div class="case-card" onclick="openModal(${c.promptId})">
       <div>
         <div class="case-metric">${c.metric}</div>
-        <div class="case-metric-sub">${c.metricLabel}</div>
+        <div class="case-metric-sub">${tr.metricLabel || c.metricLabel}</div>
       </div>
-      <div class="case-dept-tag">${c.team}</div>
+      <div class="case-dept-tag">${tr.team || c.team}</div>
       <div class="case-task">${c.task}</div>
-      <div class="case-detail">${c.detail}</div>
-      <span class="case-cta">Open prompt ${ICONS.arrow}</span>
-    </div>`).join('');
+      <div class="case-detail">${tr.detail || c.detail}</div>
+      <span class="case-cta">${t('uc_open_prompt')} ${ICONS.arrow}</span>
+    </div>`;
+  }).join('');
 }
 
 // ─── SCROLL ANIMATIONS ───────────────────────────────────────────────────

@@ -589,8 +589,8 @@ function renderSavedPanel() {
     container.innerHTML = `
       <div class="saved-empty">
         <div class="saved-empty-icon">${ICONS.bookmark}</div>
-        <h3>No saved prompts yet</h3>
-        <p>Optimized or generated prompts you save will appear here. Star prompts from the Prompt Kit to access them in the Starred tab.</p>
+        <h3>${t('saved_empty_h')}</h3>
+        <p>${t('saved_empty_p')}</p>
       </div>`;
     return;
   }
@@ -598,8 +598,8 @@ function renderSavedPanel() {
   const cards = all.map(p => buildSavedCard(p)).join('');
   container.innerHTML = `
     <div class="saved-header-row">
-      <span class="saved-count">${all.length} saved prompt${all.length !== 1 ? 's' : ''}</span>
-      <button class="saved-clear-btn" onclick="clearAllSaved()">Clear all</button>
+      <span class="saved-count">${t('saved_count_label')(all.length)}</span>
+      <button class="saved-clear-btn" onclick="clearAllSaved()">${t('saved_clear')}</button>
     </div>
     <div class="saved-flat-grid">${cards}</div>`;
 }
@@ -644,11 +644,13 @@ function buildSavedCard(p) {
   const meta    = SRC_META[p.source] || { label: p.source, cls: '' };
   const preview = p.text.replace(/\n/g, ' ').slice(0, 105) + '…';
   const date    = new Date(p.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const _catTrans  = { writing:'cat_writing', analysis:'cat_analysis', client:'cat_client', data:'cat_data', visual:'cat_visual', proposal:'cat_proposal', international:'cat_international', 'client-prep':'cat_client_prep' };
+  const _deptTrans = { 'capital-markets':'dept_capital','retail-advisory':'dept_retail','property-management':'dept_property','leasing':'dept_leasing','valuation':'dept_valuation','research':'dept_research','corporate':'dept_corporate' };
   const catName = p.category
-    ? (typeof CATEGORIES !== 'undefined' ? CATEGORIES.find(c => c.id === p.category)?.name : null) || null
+    ? (_catTrans[p.category] ? t(_catTrans[p.category]) : null) || (typeof CATEGORIES !== 'undefined' ? CATEGORIES.find(c => c.id === p.category)?.name : null) || null
     : null;
   const deptName = p.dept && p.dept !== 'my-prompts'
-    ? (typeof DEPARTMENTS !== 'undefined' ? DEPARTMENTS.find(d => d.id === p.dept)?.name : null) || null
+    ? (_deptTrans[p.dept] ? t(_deptTrans[p.dept]) : null) || (typeof DEPARTMENTS !== 'undefined' ? DEPARTMENTS.find(d => d.id === p.dept)?.name : null) || null
     : null;
   const alreadyAdded = getCustomPrompts().some(c => c._savedId === p.id);
 
@@ -702,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   showOptEmptyState(
     document.getElementById('opt-output'),
-    'Paste any prompt on the left and click <strong>Optimize</strong> — we\'ll improve it using prompt engineering best practices.'
+    t('opt_empty')
   );
 
   renderGoalSuggestions();

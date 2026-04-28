@@ -19,6 +19,11 @@ function switchLang() {
       document.getElementById('tool-saved')?.classList.contains('active')) {
     renderSavedPanel();
   }
+  // Re-render optimizer empty state if it's currently showing
+  const optOut = document.getElementById('opt-output');
+  if (optOut && optOut.querySelector('.opt-empty-state') && typeof showOptEmptyState === 'function') {
+    showOptEmptyState(optOut, t('opt_empty'));
+  }
 }
 
 function applyTranslations() {
@@ -98,7 +103,7 @@ const STRINGS = {
     gen_btn:       'Generate',
     gen_try:       'Try one of these',
     saved_empty_h: 'No saved prompts yet',
-    saved_empty_p: 'Optimized or generated prompts you save will appear here.',
+    saved_empty_p: 'Optimized or generated prompts you save will appear here. Star prompts from the Prompt Kit to access them in the Starred tab.',
     saved_count_label: (n) => `${n} saved prompt${n !== 1 ? 's' : ''}`,
     saved_clear:   'Clear all',
 
@@ -135,12 +140,15 @@ const STRINGS = {
     dept_valuation:'Valuation & Advisory',
     dept_research: 'Research & Analysis',
     dept_corporate:'Corporate Solutions',
-    cat_all:       'All Categories',
-    cat_writing:   'Writing & Communication',
-    cat_analysis:  'Research & Analysis',
-    cat_client:    'Client Relations',
-    cat_data:      'Data & Reporting',
-    cat_visual:    'Visual & Presentations',
+    cat_all:           'All Categories',
+    cat_writing:       'Writing & Communication',
+    cat_analysis:      'Research & Analysis',
+    cat_client:        'Client Relations',
+    cat_data:          'Data & Reporting',
+    cat_visual:        'Visual & Presentations',
+    cat_proposal:      'Proposal Development',
+    cat_international: 'International Coordination',
+    cat_client_prep:   'Client Preparation',
     search_placeholder: 'Search prompts…',
     btn_copy:      'Copy Prompt',
     btn_view:      'View',
@@ -157,6 +165,10 @@ const STRINGS = {
     uc_eyebrow:    'Results',
     uc_title:      'Your colleagues are already saving hours.',
     uc_sub:        'Real outcomes from real teams. Click any result to open the prompt that made it happen.',
+    uc_open_prompt: 'Open prompt',
+
+    // Optimizer empty state
+    opt_empty: 'Paste any prompt on the left and click <strong>Optimize</strong> — we\'ll improve it using prompt engineering best practices.',
 
     // How it works
     hiw_eyebrow:   'How It Works',
@@ -256,7 +268,7 @@ const STRINGS = {
     gen_btn:       'Generar',
     gen_try:       'Prueba uno de estos',
     saved_empty_h: 'Aún no hay prompts guardados',
-    saved_empty_p: 'Los prompts que optimices o generes aparecerán aquí.',
+    saved_empty_p: 'Los prompts que optimices o generes aparecerán aquí. Destaca prompts del Kit de Prompts para acceder a ellos en la pestaña Destacados.',
     saved_count_label: (n) => `${n} prompt${n !== 1 ? 's' : ''} guardado${n !== 1 ? 's' : ''}`,
     saved_clear:   'Borrar todo',
 
@@ -293,12 +305,15 @@ const STRINGS = {
     dept_valuation:'Valoración y Asesoría',
     dept_research: 'Investigación y Análisis',
     dept_corporate:'Soluciones Corporativas',
-    cat_all:       'Todas las Categorías',
-    cat_writing:   'Redacción y Comunicación',
-    cat_analysis:  'Investigación y Análisis',
-    cat_client:    'Relaciones con Clientes',
-    cat_data:      'Datos e Informes',
-    cat_visual:    'Visual y Presentaciones',
+    cat_all:           'Todas las Categorías',
+    cat_writing:       'Redacción y Comunicación',
+    cat_analysis:      'Investigación y Análisis',
+    cat_client:        'Relaciones con Clientes',
+    cat_data:          'Datos e Informes',
+    cat_visual:        'Visual y Presentaciones',
+    cat_proposal:      'Desarrollo de Propuestas',
+    cat_international: 'Coordinación Internacional',
+    cat_client_prep:   'Preparación para Clientes',
     search_placeholder: 'Buscar prompts…',
     btn_copy:      'Copiar Prompt',
     btn_view:      'Ver',
@@ -315,6 +330,17 @@ const STRINGS = {
     uc_eyebrow:    'Resultados',
     uc_title:      'Tus colegas ya están ahorrando horas.',
     uc_sub:        'Resultados reales de equipos reales. Haz clic en cualquier resultado para abrir el prompt que lo hizo posible.',
+    uc_open_prompt: 'Abrir prompt',
+    use_cases: [
+      { team: 'Asesoría Comercial',      metricLabel: 'tiempo ahorrado',        detail: 'El equipo usó el prompt de Resumen Ejecutivo en los memorandos semanales. Lo que antes requería 45 minutos de redacción se convirtió en un flujo de revisión de 10 minutos.' },
+      { team: 'Mercados de Capital',     metricLabel: 'resultados más rápidos',  detail: 'Los asesores usaron el prompt de Memorando de Inversión como base y añadieron datos propietarios. Los memos listos para el cliente salían el mismo día en lugar de la mañana siguiente.' },
+      { team: 'Gestión de Propiedades', metricLabel: 'activos estandarizados',  detail: 'El equipo de gestión personalizó el prompt de Informe Mensual con campos de datos específicos del activo. Los informes son ahora consistentes en formato y tono, mejorando la satisfacción del propietario.' },
+      { team: 'Investigación',           metricLabel: 'primer borrador',         detail: 'Los analistas procesan datos con el prompt de Informe de Mercado Trimestral para generar un primer borrador estructurado. Editar un borrador es 6× más rápido que escribir desde cero.' },
+      { team: 'Soluciones Corporativas', metricLabel: 'calidad de propuestas',   detail: 'Los gestores de cuentas usaron el prompt de Estrategia de Espacio de Trabajo para refinar sus recomendaciones. Los clientes destacaron la claridad y estructura de las propuestas.' },
+    ],
+
+    // Optimizer empty state
+    opt_empty: 'Pega cualquier prompt a la izquierda y haz clic en <strong>Optimizar</strong> — lo mejoraremos usando las mejores prácticas de prompt engineering.',
 
     // How it works
     hiw_eyebrow:   'Cómo Funciona',
