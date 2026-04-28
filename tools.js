@@ -442,8 +442,25 @@ function renderSavedPanel() {
       }
     });
   }
+  // Cross-dept prompts — split by category so they're meaningfully organised
   if (byDept['general']?.length) {
-    html += buildSavedSection('general', 'General', byDept['general'], false);
+    const byCategory = {};
+    byDept['general'].forEach(p => {
+      const catId = p.category || 'uncategorised';
+      if (!byCategory[catId]) byCategory[catId] = [];
+      byCategory[catId].push(p);
+    });
+    // Render in CATEGORIES order, then anything uncategorised last
+    const catOrder = (typeof CATEGORIES !== 'undefined')
+      ? CATEGORIES.map(c => c.id) : [];
+    const allCatIds = [...new Set([...catOrder, ...Object.keys(byCategory)])];
+    allCatIds.forEach(catId => {
+      if (!byCategory[catId]?.length) return;
+      const catName = (typeof CATEGORIES !== 'undefined')
+        ? (CATEGORIES.find(c => c.id === catId)?.name || 'Other')
+        : catId;
+      html += buildSavedSection(`general-${catId}`, catName, byCategory[catId], false);
+    });
   }
 
   container.innerHTML = html;
@@ -565,6 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (p) {
         const specific = (p.departments || []).filter(d => d !== 'all');
         if (specific.length > 0) { rec.dept = specific[0]; changed = true; }
+        // Always ensure category is set so category-grouping works
         if (!rec.category && p.category) { rec.category = p.category; changed = true; }
       }
     }
