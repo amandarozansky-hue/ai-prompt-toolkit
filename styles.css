@@ -1869,6 +1869,8 @@ footer {
   transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .saved-card:hover { border-color: var(--ink-20); }
+.saved-card-clickable { cursor: pointer; }
+.saved-card-clickable:hover { border-color: var(--ink-20); box-shadow: var(--shadow); transform: translateY(-2px); }
 .saved-card-draggable { cursor: grab; padding-left: 2rem; }
 .saved-card-draggable:active { cursor: grabbing; }
 .saved-card-draggable.dragging { opacity: .4; transform: scale(.97); box-shadow: var(--shadow-lg); }

@@ -387,9 +387,9 @@ function saveGenFromModal(i, btn) {
 
 // ─── SAVED PANEL ───────────────────────────────────────────────────────────
 const SRC_META = {
-  catalogue: { label: 'Catalogue', cls: 'tool-copilot' },
-  optimizer: { label: 'Optimizer', cls: 'tool-claude'  },
-  generator: { label: 'Generator', cls: 'tool-ellis'   },
+  catalogue: { label: 'Prompt Kit', cls: 'tool-copilot' },
+  optimizer: { label: 'Optimizer',  cls: 'tool-claude'  },
+  generator: { label: 'Generator',  cls: 'tool-ellis'   },
 };
 
 let _dragSavedId = null;
@@ -500,9 +500,15 @@ function buildSavedCard(p, draggable) {
     ? (typeof CATEGORIES !== 'undefined' ? CATEGORIES.find(c => c.id === p.category)?.name : null) || p.category
     : null;
 
+  // Catalogue cards open the full Prompt Kit modal on click
+  const isKitCard   = p.source === 'catalogue' && p.sourceId;
+  const cardClick   = isKitCard ? `onclick="openModal(${p.sourceId})"` : '';
+  const cardCursor  = isKitCard ? ' saved-card-clickable' : '';
+
   return `
-    <div class="saved-card${draggable ? ' saved-card-draggable' : ''}"
-      ${draggable ? `draggable="true" ondragstart="savedDragStart(event,${p.id})" ondragend="savedDragEnd(event)"` : ''}>
+    <div class="saved-card${draggable ? ' saved-card-draggable' : ''}${cardCursor}"
+      ${draggable ? `draggable="true" ondragstart="savedDragStart(event,${p.id})" ondragend="savedDragEnd(event)"` : ''}
+      ${cardClick}>
       ${draggable ? `<div class="saved-drag-handle" title="Drag to a department">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
           <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
@@ -520,8 +526,8 @@ function buildSavedCard(p, draggable) {
       </div>
       <div class="saved-card-preview">${esc(preview)}</div>
       <div class="saved-card-actions">
-        <button class="btn-card-copy" onclick="copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
-        <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.bookmark} Unsave</button>
+        <button class="btn-card-copy" onclick="event.stopPropagation();copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
+        <button class="btn-card-view saved-del-btn" onclick="event.stopPropagation();deleteSaved(${p.id})">${ICONS.bookmark} Unsave</button>
       </div>
     </div>`;
 }
