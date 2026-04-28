@@ -559,10 +559,14 @@ body {
 /* Department tabs */
 .dept-rail {
   display:flex;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
   gap:.375rem;
   margin-bottom:1.5rem;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:.25rem;
 }
+.dept-rail::-webkit-scrollbar { display:none; }
 .dept-tab {
   display:inline-flex;
   align-items:center;
@@ -599,7 +603,7 @@ body {
   padding:.625rem 1rem;
   box-shadow:var(--shadow-xs);
   margin-bottom:2rem;
-  flex-wrap:wrap;
+  overflow:hidden;
 }
 .filter-divider {
   width:1px;
@@ -607,7 +611,16 @@ body {
   background:var(--ink-10);
   flex-shrink:0;
 }
-.cat-pills { display:flex; flex-wrap:wrap; gap:.375rem; }
+.cat-pills {
+  display:flex;
+  flex-wrap:nowrap;
+  gap:.375rem;
+  overflow-x:auto;
+  scrollbar-width:none;
+  flex:1;
+  min-width:0;
+}
+.cat-pills::-webkit-scrollbar { display:none; }
 .cat-pill {
   padding:.3rem .75rem;
   border-radius:100px;
