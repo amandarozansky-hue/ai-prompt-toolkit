@@ -25,12 +25,13 @@
     AI Toolkit
   </a>
   <ul class="nav-links">
-    <li><a href="#ai-tools">Prompt Studio</a></li>
-    <li><a href="#catalogue">Prompt Kit</a></li>
-    <li><a href="#use-cases">Use Cases</a></li>
-    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#ai-tools" data-i18n="nav_studio">Prompt Studio</a></li>
+    <li><a href="#catalogue" data-i18n="nav_kit">Prompt Kit</a></li>
+    <li><a href="#use-cases" data-i18n="nav_usecases">Use Cases</a></li>
+    <li><a href="#how-it-works" data-i18n="nav_howitworks">How It Works</a></li>
+    <li><button class="lang-toggle" id="lang-toggle" onclick="switchLang()" title="Switch language">ES</button></li>
     <li><a href="#catalogue" class="nav-cta-btn">
-      Get Started
+      <span data-i18n="nav_getstarted">Get Started</span>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </a></li>
   </ul>
@@ -50,14 +51,14 @@
 
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
-        Internal AI Prompt Library &nbsp;·&nbsp; Beta
+        <span data-i18n="hero_badge">Internal AI Prompt Library &nbsp;·&nbsp; Beta</span>
       </div>
 
-      <h1 class="hero-title">
+      <h1 class="hero-title" data-i18n="hero_title">
         Stop starting<br>from a blank page.
       </h1>
 
-      <p class="hero-subtitle">
+      <p class="hero-subtitle" data-i18n="hero_subtitle">
         Expert-crafted AI prompts for every department — organised by task,
         labelled by impact, and ready to copy in one click.
       </p>
@@ -80,15 +81,15 @@
         </div>
         <div class="hero-stat">
           <div class="hero-stat-value">8</div>
-          <div class="hero-stat-label">Departments</div>
+          <div class="hero-stat-label" data-i18n="stat_depts">Departments</div>
         </div>
         <div class="hero-stat">
           <div class="hero-stat-value">536</div>
-          <div class="hero-stat-label">Colleagues surveyed</div>
+          <div class="hero-stat-label" data-i18n="stat_colleagues">Colleagues surveyed</div>
         </div>
         <div class="hero-stat">
           <div class="hero-stat-value">71%</div>
-          <div class="hero-stat-label">Say AI saves them time</div>
+          <div class="hero-stat-label" data-i18n="stat_ai_saves">Say AI saves them time</div>
         </div>
       </div>
 
@@ -206,9 +207,9 @@
   <div class="container">
 
     <div class="section-hdr centered reveal">
-      <div class="section-eyebrow">Prompt Studio</div>
-      <h2 class="section-title">Optimize your own prompts</h2>
-      <p class="section-sub">Improve a weak prompt instantly, generate a set from any goal, or revisit your saved favourites.</p>
+      <div class="section-eyebrow" data-i18n="ps_eyebrow">Prompt Studio</div>
+      <h2 class="section-title" data-i18n="ps_title">Optimize your own prompts</h2>
+      <p class="section-sub" data-i18n="ps_sub">Improve a weak prompt instantly, generate a set from any goal, or revisit your saved favourites.</p>
     </div>
 
     <div class="tools-outer reveal">
@@ -456,6 +457,7 @@
 <div class="modal-overlay" id="modal-overlay"></div>
 
 <script src="data.js"></script>
+<script src="translations.js"></script>
 <script src="app.js"></script>
 <script src="tools.js"></script>
 </body>

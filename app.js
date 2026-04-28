@@ -39,12 +39,13 @@ function esc(str) {
 
 function labelHTML(key) {
   const map = {
-    'frequently-used': ['label-blue',   'Frequently Used'],
-    'high-impact':     ['label-green',  'High Impact'],
-    'under-5':         ['label-purple', 'Under 5 mins'],
+    'frequently-used': ['label-blue',   () => t('lbl_freq')],
+    'high-impact':     ['label-green',  () => t('lbl_impact')],
+    'under-5':         ['label-purple', () => t('lbl_under5')],
   };
-  const [cls, text] = map[key] || ['',''];
-  return `<span class="label ${cls}">${text}</span>`;
+  const entry = map[key];
+  if (!entry) return '';
+  return `<span class="label ${entry[0]}">${entry[1]()}</span>`;
 }
 
 const TOOL_META = {
@@ -128,15 +129,19 @@ function filtered() {
 // ─── RENDER: DEPT TABS ───────────────────────────────────────────────────
 function renderDeptTabs() {
   const starCount = getStarred().length;
+  const DEPT_TRANS = { 'all':'dept_all','capital-markets':'dept_capital','retail-advisory':'dept_retail',
+    'property-management':'dept_property','leasing':'dept_leasing','valuation':'dept_valuation',
+    'research':'dept_research','corporate':'dept_corporate' };
+
   const starredBtn = `
     <button class="dept-tab${state.dept === 'starred' ? ' active' : ''}" onclick="setDept('starred')">
       ${state.dept === 'starred' ? ICONS['star-fill'] : ICONS.star}
-      Starred${starCount ? ` <span class="dept-star-count">${starCount}</span>` : ''}
+      ${t('dept_starred')}${starCount ? ` <span class="dept-star-count">${starCount}</span>` : ''}
     </button>`;
 
   const deptBtns = DEPARTMENTS.map(d => `
     <button class="dept-tab${d.id === state.dept ? ' active' : ''}" onclick="setDept('${d.id}')">
-      ${ICONS[DEPT_ICONS[d.id]] || ''} ${d.name}
+      ${ICONS[DEPT_ICONS[d.id]] || ''} ${t(DEPT_TRANS[d.id]) || d.name}
     </button>`).join('');
 
   // Insert starred after "All Departments"
@@ -146,10 +151,12 @@ function renderDeptTabs() {
 }
 
 // ─── RENDER: CAT PILLS ───────────────────────────────────────────────────
+const CAT_TRANS = { writing:'cat_writing', analysis:'cat_analysis', client:'cat_client', data:'cat_data', visual:'cat_visual' };
+
 function renderCatPills() {
-  const all = `<button class="cat-pill${state.cat === 'all' ? ' active' : ''}" onclick="setCat('all')">All Categories</button>`;
+  const all = `<button class="cat-pill${state.cat === 'all' ? ' active' : ''}" onclick="setCat('all')">${t('cat_all')}</button>`;
   const pills = CATEGORIES.map(c =>
-    `<button class="cat-pill${c.id === state.cat ? ' active' : ''}" onclick="setCat('${c.id}')">${c.name}</button>`
+    `<button class="cat-pill${c.id === state.cat ? ' active' : ''}" onclick="setCat('${c.id}')">${t(CAT_TRANS[c.id]) || c.name}</button>`
   ).join('');
   document.getElementById('cat-pills').innerHTML = all + pills;
 }
@@ -161,14 +168,14 @@ function renderGrid() {
   const count   = document.getElementById('prompt-count');
   const moreRow = document.getElementById('view-more-row');
 
-  count.textContent = `${list.length} prompt${list.length !== 1 ? 's' : ''}`;
+  count.textContent = t('prompt_count')(list.length);
 
   if (list.length === 0) {
     grid.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">${ICONS.search}</div>
-        <h3>No prompts match your filters</h3>
-        <p>Try a different department, category, or search term.</p>
+        <h3>${t('no_prompts_h')}</h3>
+        <p>${t('no_prompts_p')}</p>
       </div>`;
     if (moreRow) moreRow.style.display = 'none';
     return;
@@ -204,13 +211,13 @@ function renderGrid() {
         ${impact}
         <div class="card-actions">
           <button class="btn-card-copy" data-id="${p.id}" onclick="handleCardCopy(event,${p.id})">
-            ${ICONS.copy} Copy Prompt
+            ${ICONS.copy} ${t('btn_copy')}
           </button>
           <button class="btn-card-save${isSaved ? ' saved' : ''}" data-star-id="${p.id}" onclick="toggleStar(${p.id})" title="${isSaved ? 'Unstar' : 'Star'}">
             ${isSaved ? ICONS['star-fill'] : ICONS.star}
           </button>
           <button class="btn-card-view" onclick="openModal(${p.id})">
-            ${ICONS.eye} View
+            ${ICONS.eye} ${t('btn_view')}
           </button>
         </div>
       </div>`;
@@ -224,10 +231,10 @@ function renderGrid() {
         </svg>
       </div>
       <div class="coming-soon-body">
-        <div class="coming-soon-title">Full prompt library coming soon</div>
-        <div class="coming-soon-sub">Content is being finalised with the CBRE team. Additional task guides, worked examples, and role-specific prompts will be added here shortly.</div>
+        <div class="coming-soon-title">${t('coming_soon_title')}</div>
+        <div class="coming-soon-sub">${t('coming_soon_sub')}</div>
       </div>
-      <div class="coming-soon-badge">In progress</div>
+      <div class="coming-soon-badge">${t('coming_soon_badge')}</div>
     </div>` : '';
 
   grid.innerHTML = visible.map(buildCard).join('') + comingSoon;
@@ -241,10 +248,10 @@ function renderGrid() {
       moreRow.innerHTML = state.showAll
         ? `<button class="view-more-btn" onclick="toggleShowAll(false)">
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg>
-             View less
+             ${t('btn_view_less')}
            </button>`
         : `<button class="view-more-btn" onclick="toggleShowAll(true)">
-             View ${hidden} more prompt${hidden !== 1 ? 's' : ''}
+             ${t('btn_view_more')(hidden)}
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
            </button>`;
     }
@@ -562,6 +569,7 @@ function initNav() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof applyTranslations === 'function') applyTranslations();
   renderDeptTabs();
   renderCatPills();
   renderGrid();

@@ -212,6 +212,23 @@ body {
   color:var(--white) !important;
 }
 
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 28px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--ink-10);
+  background: var(--white);
+  color: var(--ink-60);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.lang-toggle:hover { background: var(--ink-05); color: var(--ink); border-color: var(--ink-20); }
+
 .nav-mobile-toggle {
   display:none;
   background:none;

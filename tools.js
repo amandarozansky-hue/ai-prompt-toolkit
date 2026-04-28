@@ -241,25 +241,26 @@ const GOAL_SUGGESTIONS = [
 function renderGoalSuggestions() {
   const container = document.getElementById('gen-suggestion-pills');
   if (!container) return;
-  container.innerHTML = GOAL_SUGGESTIONS.map((s, i) =>
-    `<button class="gen-suggestion-pill" onclick="pickGoal(${i})">${s.label}</button>`
+  const goals = (typeof t === 'function') ? t('goals') : GOAL_SUGGESTIONS.map(s => s.label);
+  container.innerHTML = goals.map((label, i) =>
+    `<button class="gen-suggestion-pill" onclick="pickGoal(${i})">${label}</button>`
   ).join('');
 }
 
 function pickGoal(i) {
   const input = document.getElementById('gen-input');
   if (!input) return;
-  input.value = GOAL_SUGGESTIONS[i].label;
-  // highlight active pill
+  const goals = (typeof t === 'function') ? t('goals') : GOAL_SUGGESTIONS.map(s => s.label);
+  input.value = goals[i];
   document.querySelectorAll('.gen-suggestion-pill').forEach((el, idx) => {
     el.classList.toggle('active', idx === i);
   });
   runGenerator();
-  // scroll generated cards into view smoothly
   setTimeout(() => {
     document.getElementById('gen-output')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 80);
 }
+
 
 // ─── GENERATOR ─────────────────────────────────────────────────────────────
 const GEN_ANGLES = [
