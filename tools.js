@@ -13,10 +13,10 @@ function isPromptSaved(sourceId) {
   return getSaved().some(p => p.source === 'catalogue' && p.sourceId === sourceId);
 }
 
-function savePrompt(title, text, source, sourceId = null) {
+function savePrompt(title, text, source, sourceId = null, dept = 'my-prompts', category = null) {
   const arr = getSaved();
   if (source === 'catalogue' && arr.some(p => p.source === 'catalogue' && p.sourceId === sourceId)) return;
-  arr.unshift({ id: Date.now(), title, text, source, sourceId, savedAt: Date.now() });
+  arr.unshift({ id: Date.now(), title, text, source, sourceId, dept, category, savedAt: Date.now() });
   setSaved(arr);
   if (document.getElementById('tool-saved')?.classList.contains('active')) renderSavedPanel();
 }
@@ -50,8 +50,10 @@ function saveFromCatalogue(promptId) {
     if (record) deleteSaved(record.id);
     if (btn) { btn.classList.remove('saved'); btn.innerHTML = ICONS.bookmark; btn.title = 'Save prompt'; }
   } else {
-    // save
-    savePrompt(p.title, p.prompt, 'catalogue', promptId);
+    // save — look up dept + category from PROMPTS
+    const dept = p.departments?.find(d => d !== 'all') || 'general';
+    const category = p.category || null;
+    savePrompt(p.title, p.prompt, 'catalogue', promptId, dept, category);
     if (btn) { btn.classList.add('saved'); btn.innerHTML = ICONS['bookmark-fill']; btn.title = 'Unsave'; }
   }
 }
@@ -380,12 +382,14 @@ const SRC_META = {
   generator: { label: 'Generator', cls: 'tool-ellis'   },
 };
 
+let _dragSavedId = null;
+
 function renderSavedPanel() {
-  const arr = getSaved();
+  const all  = getSaved();
   const container = document.getElementById('saved-panel-content');
   if (!container) return;
 
-  if (!arr.length) {
+  if (!all.length) {
     container.innerHTML = `
       <div class="saved-empty">
         <div class="saved-empty-icon">${ICONS.bookmark}</div>
@@ -395,33 +399,137 @@ function renderSavedPanel() {
     return;
   }
 
-  container.innerHTML = `
+  const myPrompts  = all.filter(p => p.source !== 'catalogue');
+  const catPrompts = all.filter(p => p.source === 'catalogue');
+
+  // group catalogue prompts by dept, sort each group by category
+  const byDept = {};
+  catPrompts.forEach(p => {
+    const key = p.dept || 'general';
+    if (!byDept[key]) byDept[key] = [];
+    byDept[key].push(p);
+  });
+  Object.values(byDept).forEach(arr =>
+    arr.sort((a, b) => (a.category || '').localeCompare(b.category || ''))
+  );
+
+  let html = `
     <div class="saved-header-row">
-      <span class="saved-count">${arr.length} saved prompt${arr.length !== 1 ? 's' : ''}</span>
+      <span class="saved-count">${all.length} saved prompt${all.length !== 1 ? 's' : ''}</span>
       <button class="saved-clear-btn" onclick="clearAllSaved()">Clear all</button>
-    </div>
-    <div class="saved-grid">
-      ${arr.map(p => {
-        const meta = SRC_META[p.source] || SRC_META.catalogue;
-        const preview = p.text.replace(/\n/g, ' ').slice(0, 105) + '…';
-        const date = new Date(p.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-        return `
-          <div class="saved-card">
-            <div class="saved-card-hdr">
-              <div class="saved-card-title">${esc(p.title)}</div>
-              <div class="saved-card-meta-row">
-                <span class="tool-badge ${meta.cls}">${meta.label}</span>
-                <span class="saved-card-date">${date}</span>
-              </div>
-            </div>
-            <div class="saved-card-preview">${esc(preview)}</div>
-            <div class="saved-card-actions">
-              <button class="btn-card-copy" onclick="copySavedItem(this, ${p.id})">${ICONS.copy} Copy</button>
-              <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.bookmark} Unsave</button>
-            </div>
-          </div>`;
-      }).join('')}
     </div>`;
+
+  // My Prompts section (optimizer + generator — draggable)
+  if (myPrompts.length) {
+    html += buildSavedSection('my-prompts', 'My Prompts', myPrompts, true);
+  }
+
+  // Department sections in DEPARTMENTS order
+  if (typeof DEPARTMENTS !== 'undefined') {
+    DEPARTMENTS.filter(d => d.id !== 'all').forEach(dept => {
+      if (byDept[dept.id]?.length) {
+        html += buildSavedSection(dept.id, dept.name, byDept[dept.id], false);
+      }
+    });
+  }
+  if (byDept['general']?.length) {
+    html += buildSavedSection('general', 'General', byDept['general'], false);
+  }
+
+  container.innerHTML = html;
+}
+
+function buildSavedSection(deptId, deptName, prompts, isMyPrompts) {
+  const dropAttrs = isMyPrompts ? '' :
+    `ondragover="savedDragOver(event)" ondragleave="savedDragLeave(event)" ondrop="savedDrop(event,'${deptId}')"`;
+
+  const cards = prompts.map(p => buildSavedCard(p, isMyPrompts)).join('');
+
+  const dropHint = isMyPrompts ? '' :
+    `<div class="saved-drop-hint">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+       Drop My Prompts here
+     </div>`;
+
+  return `
+    <div class="saved-section">
+      <div class="saved-section-hdr">
+        <span class="saved-section-title">${deptName}</span>
+        <span class="saved-section-badge">${prompts.length}</span>
+        ${isMyPrompts ? '<span class="saved-section-tip">Drag cards into a department below</span>' : ''}
+      </div>
+      <div class="saved-section-grid${isMyPrompts ? '' : ' saved-drop-zone'}" ${dropAttrs}>
+        ${cards}
+        ${dropHint}
+      </div>
+    </div>`;
+}
+
+function buildSavedCard(p, draggable) {
+  const meta    = SRC_META[p.source] || SRC_META.catalogue;
+  const preview = p.text.replace(/\n/g, ' ').slice(0, 100) + '…';
+  const date    = new Date(p.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const catName = p.category
+    ? (typeof CATEGORIES !== 'undefined' ? CATEGORIES.find(c => c.id === p.category)?.name : null) || p.category
+    : null;
+
+  return `
+    <div class="saved-card${draggable ? ' saved-card-draggable' : ''}"
+      ${draggable ? `draggable="true" ondragstart="savedDragStart(event,${p.id})" ondragend="savedDragEnd(event)"` : ''}>
+      ${draggable ? `<div class="saved-drag-handle" title="Drag to a department">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+          <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
+          <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
+          <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
+        </svg>
+      </div>` : ''}
+      <div class="saved-card-hdr">
+        <div class="saved-card-title">${esc(p.title)}</div>
+        <div class="saved-card-meta-row">
+          <span class="tool-badge ${meta.cls}">${meta.label}</span>
+          ${catName ? `<span class="saved-cat-tag">${catName}</span>` : ''}
+          <span class="saved-card-date">${date}</span>
+        </div>
+      </div>
+      <div class="saved-card-preview">${esc(preview)}</div>
+      <div class="saved-card-actions">
+        <button class="btn-card-copy" onclick="copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
+        <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.bookmark} Unsave</button>
+      </div>
+    </div>`;
+}
+
+// ─── DRAG AND DROP ─────────────────────────────────────────────────────────
+function savedDragStart(e, id) {
+  _dragSavedId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+}
+function savedDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+}
+function savedDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function savedDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+function savedDrop(e, targetDept) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!_dragSavedId) return;
+  const arr    = getSaved();
+  const record = arr.find(p => p.id === _dragSavedId);
+  if (record && record.source !== 'catalogue') {
+    record.dept = targetDept;
+    setSaved(arr);
+    renderSavedPanel();
+  }
+  _dragSavedId = null;
 }
 
 function copySavedItem(btn, id) {
