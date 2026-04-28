@@ -421,8 +421,9 @@ function addToPromptKit(savedId, btn) {
   const category = promptToCategory(p.text);
   const dept     = promptToDept(p.text);
 
-  custom.unshift({
-    id: Date.now(),
+  const newId = Date.now();
+  const newPrompt = {
+    id: newId,
     _savedId: savedId,
     title: polishTitle(p.title),
     prompt: p.text,
@@ -431,13 +432,87 @@ function addToPromptKit(savedId, btn) {
     labels: [],
     tool: 'studio',
     useCase: null,
-  });
+  };
+  custom.unshift(newPrompt);
   localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom));
 
-  const orig = btn.innerHTML;
-  btn.innerHTML = `${ICONS.check} Added to Prompt Kit`;
-  btn.disabled = true;
-  setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2200);
+  // Remove from Saved and close any open modal
+  deleteSaved(savedId);
+  if (typeof closeModal === 'function') closeModal();
+
+  // Navigate to Prompt Kit and highlight the new card
+  navigateToKitPrompt(newPrompt);
+}
+
+function navigateToKitPrompt(prompt) {
+  const dept = (prompt.departments || ['all'])[0];
+  if (typeof state !== 'undefined') {
+    state.dept   = dept;
+    state.cat    = 'all';
+    state.search = '';
+    state.showAll = true;
+    const searchEl = document.getElementById('search-input');
+    if (searchEl) searchEl.value = '';
+    if (typeof renderDeptTabs === 'function') renderDeptTabs();
+    if (typeof renderCatPills === 'function') renderCatPills();
+    if (typeof renderGrid    === 'function') renderGrid();
+  }
+  // Scroll to catalogue, then highlight the card
+  setTimeout(() => {
+    document.getElementById('catalogue')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => {
+      const card = document.querySelector(`[data-custom-id="${prompt.id}"]`);
+      if (card) {
+        card.classList.add('card-new-highlight');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => card.classList.remove('card-new-highlight'), 3000);
+      }
+    }, 600);
+  }, 80);
+}
+
+function openMovePromptModal(customId) {
+  const custom = getCustomPrompts();
+  const p = custom.find(x => x.id === customId);
+  if (!p) return;
+  const currentDept = (p.departments || ['all'])[0];
+  const deptOptions = (typeof DEPARTMENTS !== 'undefined')
+    ? DEPARTMENTS.map(d => `
+        <button class="move-dept-btn${d.id === currentDept ? ' active' : ''}"
+          onclick="moveCustomToDept(${customId},'${d.id}')">
+          ${d.name}
+        </button>`).join('')
+    : '';
+  const overlay = document.getElementById('modal-overlay');
+  overlay.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <div class="modal-top">
+        <div class="modal-top-left">
+          <div class="modal-title">Change Department</div>
+          <div class="modal-cat">${esc(p.title)}</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">${ICONS.x}</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:.85rem;color:var(--ink-60);margin-bottom:1.25rem;">
+          Choose which department this prompt appears in:
+        </p>
+        <div class="move-dept-grid">${deptOptions}</div>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  overlay.onclick = e => { if (e.target === overlay) closeModal(); };
+}
+
+function moveCustomToDept(customId, newDept) {
+  const custom = getCustomPrompts();
+  const p = custom.find(x => x.id === customId);
+  if (!p) return;
+  p.departments = newDept === 'all' ? ['all'] : [newDept];
+  localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom));
+  closeModal();
+  navigateToKitPrompt(p);
 }
 
 const CAT_KEYWORDS = {

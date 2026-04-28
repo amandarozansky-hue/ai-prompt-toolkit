@@ -1981,6 +1981,33 @@ footer {
 }
 .btn-card-save svg { width: 13px; height: 13px; }
 .btn-card-save:hover { color: var(--accent); border-color: var(--accent-light); background: var(--accent-xlight); }
+/* New-card highlight pulse */
+@keyframes highlightPulse {
+  0%,100% { border-color: var(--accent-mid); box-shadow: 0 0 0 0 rgba(26,122,94,.15); }
+  50%      { border-color: var(--accent-mid); box-shadow: 0 0 0 6px rgba(26,122,94,.08); }
+}
+.card-new-highlight {
+  animation: highlightPulse 1s ease-in-out 3;
+  border-color: var(--accent-mid) !important;
+}
+.prompt-card-studio { border-left: 3px solid var(--accent-light); }
+
+/* Dept picker in move modal */
+.move-dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: .5rem;
+}
+.move-dept-btn {
+  padding: .6rem .9rem; border-radius: var(--r);
+  border: 1.5px solid var(--ink-10); background: var(--ink-05);
+  color: var(--ink-60); font-size: .84rem; font-weight: 500;
+  cursor: pointer; text-align: left;
+  transition: all var(--dur) var(--ease);
+}
+.move-dept-btn:hover { border-color: var(--accent-light); background: var(--accent-xlight); color: var(--accent); }
+.move-dept-btn.active { border-color: var(--accent); background: var(--accent-xlight); color: var(--accent); font-weight: 700; }
+
 /* Star state */
 .btn-card-save.saved { color: #d97706; background: #fef3c7; border-color: #fde68a; }
 .btn-card-save.saved svg { fill: #d97706; stroke: #d97706; }

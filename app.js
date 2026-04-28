@@ -182,8 +182,11 @@ function renderGrid() {
         ${ICONS.star}
         <span>${p.useCase.team} &mdash; ${p.useCase.result}</span>
       </div>` : '';
+    const isStudioCard = p.tool === 'studio';
     return `
-      <div class="prompt-card" style="animation-delay:${i * 25}ms">
+      <div class="prompt-card${isStudioCard ? ' prompt-card-studio' : ''}"
+        style="animation-delay:${i * 25}ms"
+        ${isStudioCard ? `data-custom-id="${p.id}"` : ''}>
         <div class="card-header">
           <div class="card-title">${p.title}</div>
           <div class="card-header-meta">
@@ -265,7 +268,8 @@ function handleCardCopy(e, id) {
 
 // ─── MODAL ────────────────────────────────────────────────────────────────
 function openModal(id) {
-  const p = PROMPTS.find(x => x.id === id);
+  let p = PROMPTS.find(x => x.id === id);
+  if (!p && typeof getCustomPrompts === 'function') p = getCustomPrompts().find(x => x.id === id);
   if (!p) return;
 
   const overlay = document.getElementById('modal-overlay');
@@ -320,6 +324,9 @@ function buildStandardModal(p, id) {
           <button class="modal-btn-save${isStarred(id) ? ' modal-btn-saved' : ''}" id="modal-save-btn" onclick="toggleStar(${id});updateModalStarState(${id})">
             ${isStarred(id) ? ICONS['star-fill'] + ' Starred' : ICONS.star + ' Star'}
           </button>
+          ${p.tool === 'studio' ? `<button class="modal-btn-save" onclick="openMovePromptModal(${id})">
+            ${ICONS.arrow} Change Dept
+          </button>` : ''}
         </div>
       </div>
     </div>
