@@ -48,10 +48,10 @@ function labelHTML(key) {
 }
 
 const TOOL_META = {
-  copilot: { label: 'Copilot',       cls: 'tool-copilot' },
-  ellis:   { label: 'Ellis AI',      cls: 'tool-ellis'   },
-  claude:  { label: 'Claude',        cls: 'tool-claude'  },
-  studio:  { label: 'Prompt Studio', cls: 'tool-studio'  },
+  copilot: { label: 'Copilot',       cls: 'tool-copilot', url: 'https://copilot.microsoft.com' },
+  ellis:   { label: 'Ellis AI',      cls: 'tool-ellis',   url: 'https://ellis.cbre.com'        },
+  claude:  { label: 'Claude',        cls: 'tool-claude',  url: 'https://claude.ai'             },
+  studio:  { label: 'Prompt Studio', cls: 'tool-studio',  url: null                            },
 };
 
 // ─── STARRED PROMPTS ─────────────────────────────────────────────────────
@@ -81,6 +81,11 @@ function toggleStar(id) {
 function toolBadge(tool) {
   const t = TOOL_META[tool];
   if (!t) return '';
+  if (t.url) {
+    return `<a class="tool-badge tool-badge-link ${t.cls}" href="${t.url}" target="_blank" rel="noopener" title="Open ${t.label}" onclick="event.stopPropagation()">${t.label}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="9" height="9"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </a>`;
+  }
   return `<span class="tool-badge ${t.cls}">${t.label}</span>`;
 }
 

@@ -754,6 +754,16 @@ body {
 .tool-ellis   { background:var(--accent-xlight); color:var(--accent); }
 .tool-claude  { background:var(--amber-light);   color:var(--amber);  }
 
+.tool-badge-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.tool-badge-link:hover { opacity: .75; transform: translateY(-1px); }
+
 /* Modal tool meta row */
 .modal-top-meta {
   display:flex;
