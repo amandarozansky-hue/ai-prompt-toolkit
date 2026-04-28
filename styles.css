@@ -1895,9 +1895,9 @@ footer {
 
 /* Cards */
 .saved-card {
-  background: var(--ink-05); border: 1.5px solid var(--ink-10);
-  border-radius: var(--r-lg); padding: 1.1rem;
-  display: flex; flex-direction: column; gap: .7rem; position: relative;
+  background: var(--white); border: 1.5px solid var(--ink-10);
+  border-radius: var(--r-lg); padding: 1.25rem;
+  display: flex; flex-direction: column; gap: .875rem;
   transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .saved-card:hover { border-color: var(--ink-20); }
@@ -1927,9 +1927,26 @@ footer {
   display: -webkit-box; -webkit-line-clamp: 2;
   -webkit-box-orient: vertical; overflow: hidden;
 }
-.saved-card-actions { display: flex; gap: .5rem; margin-top: auto; }
-.saved-del-btn { color: var(--ink-40) !important; }
-.saved-del-btn:hover { color: var(--accent) !important; border-color: var(--accent-light) !important; }
+.saved-card-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .4rem;
+  margin-top: auto;
+}
+/* Copy spans full width on its own row */
+.saved-card-actions .btn-card-copy { grid-column: 1 / -1; justify-content: center; }
+/* Add to Kit and Delete share the second row */
+.saved-add-kit-btn { justify-content: center; }
+.saved-del-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .5rem .75rem; border-radius: var(--r-sm);
+  font-size: .75rem; font-weight: 600;
+  background: transparent; color: var(--ink-40);
+  border: 1.5px solid var(--ink-10); cursor: pointer;
+  transition: all var(--dur) var(--ease); white-space: nowrap;
+}
+.saved-del-btn svg { width: 12px; height: 12px; }
+.saved-del-btn:hover { color: #c0392b; border-color: #fbd0d0; background: #fdf2f2; }
 
 .saved-empty {
   display: flex; flex-direction: column; align-items: center;
