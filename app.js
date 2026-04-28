@@ -324,10 +324,19 @@ function buildStandardModal(p, id) {
           <button class="modal-btn-save${isStarred(id) ? ' modal-btn-saved' : ''}" id="modal-save-btn" onclick="toggleStar(${id});updateModalStarState(${id})">
             ${isStarred(id) ? ICONS['star-fill'] + ' Starred' : ICONS.star + ' Star'}
           </button>
-          ${p.tool === 'studio' ? `<button class="modal-btn-save" onclick="openMovePromptModal(${id})">
-            ${ICONS.arrow} Change Dept
-          </button>` : ''}
         </div>
+        ${p.tool === 'studio' ? `
+        <div class="modal-studio-mgmt">
+          <button class="studio-mgmt-btn" onclick="openMovePromptModal(${id})">
+            ${ICONS.arrow} Change Department
+          </button>
+          <button class="studio-mgmt-btn" onclick="sendBackToStudio(${id})">
+            ${ICONS.bookmark} Send Back to Studio
+          </button>
+          <button class="studio-mgmt-btn studio-mgmt-remove" onclick="removeFromPromptKit(${id})">
+            ${ICONS.x} Remove from Kit
+          </button>
+        </div>` : ''}
       </div>
     </div>
   </div>`;

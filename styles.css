@@ -1992,6 +1992,27 @@ footer {
 }
 .prompt-card-studio { border-left: 3px solid var(--accent-light); }
 
+/* Studio management row in modal */
+.modal-studio-mgmt {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ink-10);
+  margin-top: 1rem;
+}
+.studio-mgmt-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .45rem .85rem; border-radius: var(--r-sm);
+  font-size: .78rem; font-weight: 600;
+  background: var(--ink-05); color: var(--ink-60);
+  border: 1.5px solid var(--ink-10); cursor: pointer;
+  transition: all var(--dur) var(--ease); white-space: nowrap;
+}
+.studio-mgmt-btn svg { width: 12px; height: 12px; }
+.studio-mgmt-btn:hover { background: var(--ink-10); color: var(--ink); border-color: var(--ink-20); }
+.studio-mgmt-remove:hover { background: #fdf2f2; color: #c0392b; border-color: #fbd0d0; }
+
 /* Dept picker in move modal */
 .move-dept-grid {
   display: grid;

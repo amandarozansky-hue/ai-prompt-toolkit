@@ -425,6 +425,8 @@ function addToPromptKit(savedId, btn) {
   const newPrompt = {
     id: newId,
     _savedId: savedId,
+    _source: p.source || 'optimizer',   // remember origin for "send back"
+    _rawTitle: p.title,                  // keep original title for round-trip
     title: polishTitle(p.title),
     prompt: p.text,
     category,
@@ -513,6 +515,34 @@ function moveCustomToDept(customId, newDept) {
   localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom));
   closeModal();
   navigateToKitPrompt(p);
+}
+
+function removeFromPromptKit(customId) {
+  const custom = getCustomPrompts().filter(x => x.id !== customId);
+  localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom));
+  closeModal();
+  if (typeof renderGrid === 'function') renderGrid();
+}
+
+function sendBackToStudio(customId) {
+  const custom = getCustomPrompts();
+  const p = custom.find(x => x.id === customId);
+  if (!p) return;
+
+  // Re-add to saved using the original source and title
+  savePrompt(p._rawTitle || p.title, p.prompt, p._source || 'optimizer');
+
+  // Remove from custom prompts
+  localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom.filter(x => x.id !== customId)));
+  if (typeof renderGrid === 'function') renderGrid();
+
+  closeModal();
+
+  // Navigate to Prompt Studio > Saved tab
+  if (typeof switchToolsTab === 'function') switchToolsTab('saved');
+  setTimeout(() => {
+    document.getElementById('ai-tools')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
 }
 
 const CAT_KEYWORDS = {
