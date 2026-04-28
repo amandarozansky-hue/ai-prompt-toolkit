@@ -392,27 +392,39 @@ function getCustomPrompts() {
   try { return JSON.parse(localStorage.getItem(CUSTOM_KEY) || '[]'); } catch { return []; }
 }
 
+// Strip generator/optimizer prefixes and apply title case
+function polishTitle(raw) {
+  const PREFIXES = /^(Optimized|Action Plan|Expert Perspective|Mistakes to Avoid|Ready-to-Use Template|Gap Analysis|Research & Understand|Research and Understand)[:\-–]\s*/i;
+  let title = raw.replace(PREFIXES, '').trim();
+  // Title-case: capitalise each word except minor words (unless first)
+  const minor = new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','of','up','as','is','it','its']);
+  title = title.split(' ')
+    .map((w, i) => (i === 0 || !minor.has(w.toLowerCase()))
+      ? w.charAt(0).toUpperCase() + w.slice(1)
+      : w.toLowerCase())
+    .join(' ');
+  return title.slice(0, 72);
+}
+
 function addToPromptKit(savedId, btn) {
   const p = getSaved().find(x => x.id === savedId);
   if (!p) return;
 
   const custom = getCustomPrompts();
   if (custom.some(c => c._savedId === savedId)) {
-    // already added — give feedback
     const orig = btn.innerHTML;
     btn.innerHTML = `${ICONS.check} Already in Kit`;
     setTimeout(() => { btn.innerHTML = orig; }, 2000);
     return;
   }
 
-  // Detect category and dept from text
   const category = promptToCategory(p.text);
   const dept     = promptToDept(p.text);
 
   custom.unshift({
     id: Date.now(),
     _savedId: savedId,
-    title: p.title.replace(/^(Optimized:|Action Plan:|Expert Perspective:|Mistakes to Avoid:|Ready-to-Use Template:|Gap Analysis:|Research & Understand:)\s*/i, '').slice(0, 80),
+    title: polishTitle(p.title),
     prompt: p.text,
     category,
     departments: dept === 'all' ? ['all'] : [dept],
@@ -486,6 +498,42 @@ function renderSavedPanel() {
     <div class="saved-flat-grid">${cards}</div>`;
 }
 
+function openSavedModal(savedId) {
+  const p = getSaved().find(x => x.id === savedId);
+  if (!p) return;
+  const meta    = SRC_META[p.source] || { label: p.source, cls: '' };
+  const alreadyAdded = getCustomPrompts().some(c => c._savedId === savedId);
+  const overlay = document.getElementById('modal-overlay');
+  overlay.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <div class="modal-top">
+        <div class="modal-top-left">
+          <div style="margin-bottom:.5rem">
+            <span class="tool-badge ${meta.cls}">${meta.label}</span>
+          </div>
+          <div class="modal-title">${esc(p.title)}</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">${ICONS.x}</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-prompt-label">Prompt</div>
+        <div class="modal-prompt-box">${esc(p.text)}</div>
+        <div class="modal-actions">
+          <button class="modal-btn-copy" id="modal-copy-btn" onclick="copySavedItem(this,${savedId})">
+            ${ICONS.copy} Copy Prompt
+          </button>
+          <button class="modal-btn-save${alreadyAdded ? ' modal-btn-saved' : ''}"
+            onclick="addToPromptKit(${savedId},this)">
+            ${alreadyAdded ? `${ICONS.check} In Prompt Kit` : `${ICONS.arrow} Add to Prompt Kit`}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  overlay.onclick = e => { if (e.target === overlay) closeModal(); };
+}
+
 function buildSavedCard(p) {
   const meta    = SRC_META[p.source] || { label: p.source, cls: '' };
   const preview = p.text.replace(/\n/g, ' ').slice(0, 105) + '…';
@@ -496,11 +544,10 @@ function buildSavedCard(p) {
   const deptName = p.dept && p.dept !== 'my-prompts'
     ? (typeof DEPARTMENTS !== 'undefined' ? DEPARTMENTS.find(d => d.id === p.dept)?.name : null) || null
     : null;
-
   const alreadyAdded = getCustomPrompts().some(c => c._savedId === p.id);
 
   return `
-    <div class="saved-card">
+    <div class="saved-card saved-card-clickable" onclick="openSavedModal(${p.id})">
       <div class="saved-card-hdr">
         <div class="saved-card-title">${esc(p.title)}</div>
         <div class="saved-card-meta-row">
@@ -512,11 +559,12 @@ function buildSavedCard(p) {
       </div>
       <div class="saved-card-preview">${esc(preview)}</div>
       <div class="saved-card-actions">
-        <button class="btn-card-copy" onclick="copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
-        <button class="saved-add-kit-btn${alreadyAdded ? ' added' : ''}" onclick="addToPromptKit(${p.id},this)">
+        <button class="btn-card-copy" onclick="event.stopPropagation();copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
+        <button class="saved-add-kit-btn${alreadyAdded ? ' added' : ''}"
+          onclick="event.stopPropagation();addToPromptKit(${p.id},this)">
           ${alreadyAdded ? `${ICONS.check} In Prompt Kit` : `${ICONS.arrow} Add to Prompt Kit`}
         </button>
-        <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.x} Delete</button>
+        <button class="btn-card-view saved-del-btn" onclick="event.stopPropagation();deleteSaved(${p.id})">${ICONS.x} Delete</button>
       </div>
     </div>`;
 }
