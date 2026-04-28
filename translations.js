@@ -25,13 +25,12 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     const val = t(key);
-    if (el.tagName === 'INPUT') el.placeholder = val;
+    if (typeof val === 'function') return; // skip function-type values (handled in JS)
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = val;
     else el.innerHTML = val;
   });
-  // Update lang toggle label
   const btn = document.getElementById('lang-toggle');
   if (btn) btn.textContent = currentLang === 'en' ? 'ES' : 'EN';
-  // Update html lang attribute
   document.documentElement.lang = currentLang;
 }
 
@@ -49,8 +48,8 @@ const STRINGS = {
     hero_badge:       'Internal AI Prompt Library &nbsp;·&nbsp; Beta',
     hero_title:       'Stop starting<br>from a blank page.',
     hero_subtitle:    'Expert-crafted AI prompts for every department — organised by task, labelled by impact, and ready to copy in one click.',
-    hero_btn_browse:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Browse Prompts',
-    hero_btn_peers:   'See results from your peers <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><polyline points="9 18 15 12 9 6"/></svg>',
+    hero_btn_browse:  'Browse Prompts',
+    hero_btn_peers:   'See results from your peers',
     stat_prompts:     'Prompts',
     stat_depts:       'Departments',
     stat_colleagues:  'Colleagues surveyed',
@@ -207,8 +206,8 @@ const STRINGS = {
     hero_badge:       'Biblioteca Interna de Prompts IA &nbsp;·&nbsp; Beta',
     hero_title:       'Deja de empezar<br>desde cero.',
     hero_subtitle:    'Prompts de IA creados por expertos para cada departamento — organizados por tarea, etiquetados por impacto, y listos para copiar en un clic.',
-    hero_btn_browse:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Ver Prompts',
-    hero_btn_peers:   'Ver resultados de tus colegas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><polyline points="9 18 15 12 9 6"/></svg>',
+    hero_btn_browse:  'Ver Prompts',
+    hero_btn_peers:   'Ver resultados de tus colegas',
     stat_prompts:     'Prompts',
     stat_depts:       'Departamentos',
     stat_colleagues:  'Colegas encuestados',
