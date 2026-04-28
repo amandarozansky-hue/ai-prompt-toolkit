@@ -1521,7 +1521,7 @@ footer {
   background: var(--white);
   border: 1.5px solid var(--ink-10);
   border-radius: var(--r-xl);
-  overflow: hidden;
+  overflow: clip; /* clip = visual clipping without blocking sticky children */
   box-shadow: var(--shadow);
 }
 
@@ -1534,6 +1534,10 @@ footer {
   padding: .625rem 1rem 0;
   gap: .25rem;
   overflow-x: auto;
+  /* sticky below the nav */
+  position: sticky;
+  top: 60px;
+  z-index: 100;
 }
 .tools-tab {
   display: inline-flex;
@@ -1811,7 +1815,7 @@ footer {
 /* ─── Saved panel ──────────────────────────────────────── */
 .saved-header-row {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1.5rem 2rem .5rem;
+  padding: 1.5rem 1.5rem .5rem;
 }
 .saved-count { font-size: .8rem; font-weight: 600; color: var(--ink-40); }
 .saved-clear-btn {
@@ -1823,7 +1827,7 @@ footer {
 .saved-clear-btn:hover { color: #c0392b; background: #fdf2f2; }
 
 /* Dept sections */
-.saved-section { border-top: 1.5px solid var(--ink-10); padding: 1.25rem 2rem 1.5rem; }
+.saved-section { border-top: 1.5px solid var(--ink-10); padding: 1.25rem 1.5rem 1.5rem; }
 
 .saved-section-hdr {
   display: flex; align-items: center; gap: .6rem; margin-bottom: 1rem;
