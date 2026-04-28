@@ -253,11 +253,15 @@
           <div class="gen-input-row">
             <div class="tool-field-label">What's your goal?</div>
             <div class="gen-input-wrap">
-              <input id="gen-input" type="text" class="tool-input" placeholder="e.g. write a logistics investment memo, get a promotion, analyse market trends…" />
+              <input id="gen-input" type="text" class="tool-input" placeholder="Type your own goal or pick one below…" />
               <button class="btn btn-dark" onclick="runGenerator()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 Generate
               </button>
+            </div>
+            <div class="gen-suggestions">
+              <span class="gen-suggestions-label">Try one of these</span>
+              <div class="gen-suggestion-pills" id="gen-suggestion-pills"></div>
             </div>
           </div>
           <div id="gen-output" class="gen-cards-grid"></div>

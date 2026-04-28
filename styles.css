@@ -1675,6 +1675,53 @@ footer {
 .gen-input-row { display: flex; flex-direction: column; gap: .75rem; }
 .gen-input-wrap { display: flex; gap: .75rem; align-items: center; }
 
+/* Goal suggestions */
+.gen-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  margin-top: .25rem;
+}
+.gen-suggestions-label {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+}
+.gen-suggestion-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+.gen-suggestion-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .35rem .8rem;
+  border-radius: 100px;
+  border: 1.5px solid var(--ink-10);
+  background: var(--white);
+  color: var(--ink-60);
+  font-size: .8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  white-space: nowrap;
+}
+.gen-suggestion-pill:hover {
+  border-color: var(--ink-20);
+  color: var(--ink);
+  background: var(--ink-05);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-xs);
+}
+.gen-suggestion-pill.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(15,17,23,.18);
+}
+
 .gen-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

@@ -190,6 +190,49 @@ function saveOptimized() {
   }
 }
 
+// ─── GOAL SUGGESTIONS ──────────────────────────────────────────────────────
+const GOAL_SUGGESTIONS = [
+  { label: 'Write an investment memo',         group: 'Capital Markets' },
+  { label: 'Pitch a property to a client',     group: 'Client Relations' },
+  { label: 'Analyse a local market',           group: 'Research' },
+  { label: 'Draft a lease summary',            group: 'Leasing' },
+  { label: 'Build a financial model',          group: 'Valuation' },
+  { label: 'Prepare a board presentation',     group: 'Corporate' },
+  { label: 'Negotiate a lease renewal',        group: 'Leasing' },
+  { label: 'Write an executive summary',       group: 'Writing' },
+  { label: 'Create a due diligence checklist', group: 'Capital Markets' },
+  { label: 'Onboard a new client',             group: 'Client Relations' },
+  { label: 'Forecast rental growth',           group: 'Research' },
+  { label: 'Improve my email writing',         group: 'Writing' },
+  { label: 'Get a promotion at work',          group: 'Career' },
+  { label: 'Plan a property refurbishment',    group: 'Property Mgmt' },
+  { label: 'Summarise a long report',          group: 'Writing' },
+  { label: 'Prepare for a client meeting',     group: 'Client Relations' },
+];
+
+function renderGoalSuggestions() {
+  const container = document.getElementById('gen-suggestion-pills');
+  if (!container) return;
+  container.innerHTML = GOAL_SUGGESTIONS.map((s, i) =>
+    `<button class="gen-suggestion-pill" onclick="pickGoal(${i})">${s.label}</button>`
+  ).join('');
+}
+
+function pickGoal(i) {
+  const input = document.getElementById('gen-input');
+  if (!input) return;
+  input.value = GOAL_SUGGESTIONS[i].label;
+  // highlight active pill
+  document.querySelectorAll('.gen-suggestion-pill').forEach((el, idx) => {
+    el.classList.toggle('active', idx === i);
+  });
+  runGenerator();
+  // scroll generated cards into view smoothly
+  setTimeout(() => {
+    document.getElementById('gen-output')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 80);
+}
+
 // ─── GENERATOR ─────────────────────────────────────────────────────────────
 const GEN_ANGLES = [
   {
@@ -329,7 +372,11 @@ document.addEventListener('DOMContentLoaded', () => {
     'Paste any prompt on the left and click <strong>Optimize</strong> — we\'ll improve it using prompt engineering best practices.'
   );
 
-  document.getElementById('gen-input')?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') runGenerator();
+  renderGoalSuggestions();
+
+  const genInput = document.getElementById('gen-input');
+  genInput?.addEventListener('keydown', e => { if (e.key === 'Enter') runGenerator(); });
+  genInput?.addEventListener('input', () => {
+    document.querySelectorAll('.gen-suggestion-pill').forEach(el => el.classList.remove('active'));
   });
 });
