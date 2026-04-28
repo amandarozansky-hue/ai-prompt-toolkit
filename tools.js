@@ -274,14 +274,15 @@ function runGenerator() {
   container.innerHTML = _genData.map((item, i) => {
     const preview = item.text.replace(/\n/g, ' ').replace(/\*\*/g, '').slice(0, 115) + '…';
     return `
-      <div class="gen-card" style="animation-delay:${i * 60}ms">
+      <div class="gen-card" style="animation-delay:${i * 60}ms" onclick="openGenModal(${i})">
         <div class="gen-card-top">
           <span class="label ${item.cls}">${item.label}</span>
+          <span class="gen-card-view-hint">${ICONS.eye} View</span>
         </div>
         <div class="gen-card-preview">${esc(preview)}</div>
         <div class="gen-card-actions">
-          <button class="btn-card-copy" onclick="copyGen(this, ${i})">${ICONS.copy} Copy</button>
-          <button class="btn-card-view" onclick="saveGen(this, ${i})">${ICONS.bookmark} Save</button>
+          <button class="btn-card-copy" onclick="event.stopPropagation();copyGen(this, ${i})">${ICONS.copy} Copy</button>
+          <button class="btn-card-view" onclick="event.stopPropagation();saveGen(this, ${i})">${ICONS.bookmark} Save</button>
         </div>
       </div>`;
   }).join('');
@@ -299,6 +300,61 @@ function saveGen(btn, i) {
   btn.classList.add('copied');
   btn.innerHTML = `${ICONS.check} Saved`;
   setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2200);
+}
+
+// ─── GEN MODAL ─────────────────────────────────────────────────────────────
+function openGenModal(i) {
+  const item = _genData[i];
+  if (!item) return;
+  const overlay = document.getElementById('modal-overlay');
+  overlay.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+      <div class="modal-top">
+        <div class="modal-top-left">
+          <div style="margin-bottom:.5rem"><span class="label ${item.cls}">${item.label}</span></div>
+          <div class="modal-title">Generated Prompt</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">${ICONS.x}</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-prompt-label">Full Prompt</div>
+        <div class="modal-prompt-box">${esc(item.text)}</div>
+        <div class="modal-actions">
+          <button class="modal-btn-copy" id="modal-copy-btn" onclick="copyGenFromModal(${i})">
+            ${ICONS.copy} Copy Prompt
+          </button>
+          <button class="modal-btn-save" onclick="saveGenFromModal(${i}, this)">
+            ${ICONS.bookmark} Save
+          </button>
+        </div>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  overlay.onclick = e => { if (e.target === overlay) closeModal(); };
+}
+
+function copyGenFromModal(i) {
+  const item = _genData[i];
+  const btn = document.getElementById('modal-copy-btn');
+  if (item && btn) copyText(item.text, btn, `${ICONS.copy} Copy Prompt`);
+}
+
+function saveGenFromModal(i, btn) {
+  if (!_genData[i]) return;
+  const goal = (document.getElementById('gen-input').value || '').trim().slice(0, 48);
+  savePrompt(`${_genData[i].label}: ${goal}`, _genData[i].text, 'generator');
+  const orig = btn.innerHTML;
+  btn.classList.remove('modal-btn-save');
+  btn.classList.add('modal-btn-copy');
+  btn.style.background = 'var(--accent)';
+  btn.innerHTML = `${ICONS.check} Saved`;
+  setTimeout(() => {
+    btn.style.background = '';
+    btn.classList.remove('modal-btn-copy');
+    btn.classList.add('modal-btn-save');
+    btn.innerHTML = orig;
+  }, 2200);
 }
 
 // ─── SAVED PANEL ───────────────────────────────────────────────────────────

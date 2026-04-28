@@ -1739,9 +1739,23 @@ footer {
   transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   animation: cardIn .3s var(--ease) both;
 }
-.gen-card:hover { border-color: var(--ink-20); box-shadow: var(--shadow-sm); }
-.gen-card-top { display: flex; align-items: center; gap: .5rem; }
+.gen-card { cursor: pointer; }
+.gen-card:hover { border-color: var(--ink-20); box-shadow: var(--shadow); transform: translateY(-2px); }
+.gen-card-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .gen-angle-label { cursor: default; }
+
+.gen-card-view-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--ink-40);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+.gen-card-view-hint svg { width: 12px; height: 12px; }
+.gen-card:hover .gen-card-view-hint { opacity: 1; }
 .gen-card-preview {
   font-size: .845rem;
   color: var(--ink-60);
