@@ -50,8 +50,18 @@ function saveFromCatalogue(promptId) {
     if (record) deleteSaved(record.id);
     if (btn) { btn.classList.remove('saved'); btn.innerHTML = ICONS.bookmark; btn.title = 'Save prompt'; }
   } else {
-    // save — look up dept + category from PROMPTS
-    const dept = p.departments?.find(d => d !== 'all') || 'general';
+    // Determine dept to file under:
+    // prefer the currently-viewed dept tab, fall back to prompt's own dept, then 'general'
+    const currentDept   = (typeof state !== 'undefined' && state.dept !== 'all') ? state.dept : null;
+    const specificDepts = (p.departments || []).filter(d => d !== 'all');
+    let dept;
+    if (currentDept && (specificDepts.length === 0 || specificDepts.includes(currentDept))) {
+      dept = currentDept;                        // viewed dept wins
+    } else if (specificDepts.length > 0) {
+      dept = specificDepts[0];                   // use prompt's own dept
+    } else {
+      dept = 'general';
+    }
     const category = p.category || null;
     savePrompt(p.title, p.prompt, 'catalogue', promptId, dept, category);
     if (btn) { btn.classList.add('saved'); btn.innerHTML = ICONS['bookmark-fill']; btn.title = 'Unsave'; }
@@ -545,6 +555,22 @@ function clearAllSaved() {
 
 // ─── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Migrate any old saved records that have dept:'general' but a specific sourceId
+  // (saved before the dept-detection fix). Re-assign to the prompt's first specific dept.
+  const arr = getSaved();
+  let changed = false;
+  arr.forEach(rec => {
+    if (rec.source === 'catalogue' && rec.dept === 'general' && rec.sourceId) {
+      const p = (typeof PROMPTS !== 'undefined') && PROMPTS.find(x => x.id === rec.sourceId);
+      if (p) {
+        const specific = (p.departments || []).filter(d => d !== 'all');
+        if (specific.length > 0) { rec.dept = specific[0]; changed = true; }
+        if (!rec.category && p.category) { rec.category = p.category; changed = true; }
+      }
+    }
+  });
+  if (changed) setSaved(arr);
+
   _updateSavedBadge();
 
   showOptEmptyState(
