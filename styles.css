@@ -1832,6 +1832,28 @@ footer {
 }
 .saved-clear-btn:hover { color: #c0392b; background: #fdf2f2; }
 
+/* Flat saved grid */
+.saved-flat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: .875rem;
+  padding: 0 1.5rem 2rem;
+}
+
+/* Add to Prompt Kit button */
+.saved-add-kit-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .5rem .8rem; border-radius: var(--r-sm);
+  font-size: .75rem; font-weight: 600;
+  background: var(--accent-xlight); color: var(--accent);
+  border: 1.5px solid var(--accent-light); cursor: pointer;
+  transition: all var(--dur) var(--ease); white-space: nowrap; flex-shrink: 0;
+}
+.saved-add-kit-btn:hover { background: var(--accent); color: var(--white); }
+.saved-add-kit-btn svg { width: 12px; height: 12px; }
+.saved-add-kit-btn.added { background: var(--ink-05); color: var(--ink-40); border-color: var(--ink-10); cursor: default; }
+.saved-add-kit-btn:disabled { cursor: default; }
+
 /* Dept sections */
 .saved-section { border-top: 1.5px solid var(--ink-10); padding: 1.25rem 1.5rem 1.5rem; }
 
@@ -1942,8 +1964,21 @@ footer {
 }
 .btn-card-save svg { width: 13px; height: 13px; }
 .btn-card-save:hover { color: var(--accent); border-color: var(--accent-light); background: var(--accent-xlight); }
-.btn-card-save.saved { color: var(--accent); background: var(--accent-xlight); border-color: var(--accent-light); }
-.btn-card-save.saved svg { fill: var(--accent); }
+/* Star state */
+.btn-card-save.saved { color: #d97706; background: #fef3c7; border-color: #fde68a; }
+.btn-card-save.saved svg { fill: #d97706; stroke: #d97706; }
+.btn-card-save:hover { color: #d97706; border-color: #fde68a; background: #fef3c7; }
+
+/* Studio tool badge */
+.tool-studio { background: var(--accent-xlight); color: var(--accent); border: 1px solid var(--accent-light); font-weight: 700; }
+
+/* Starred dept count badge */
+.dept-star-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 999px; background: #fde68a; color: #92400e;
+  font-size: .62rem; font-weight: 800;
+}
 
 /* ─── Save button in modal ─────────────────────────────── */
 .modal-btn-save {

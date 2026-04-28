@@ -385,17 +385,85 @@ function saveGenFromModal(i, btn) {
   }, 2200);
 }
 
+// ─── CUSTOM PROMPTS (added to Prompt Kit from Prompt Studio) ───────────────
+const CUSTOM_KEY = 'ai-toolkit-custom';
+
+function getCustomPrompts() {
+  try { return JSON.parse(localStorage.getItem(CUSTOM_KEY) || '[]'); } catch { return []; }
+}
+
+function addToPromptKit(savedId, btn) {
+  const p = getSaved().find(x => x.id === savedId);
+  if (!p) return;
+
+  const custom = getCustomPrompts();
+  if (custom.some(c => c._savedId === savedId)) {
+    // already added — give feedback
+    const orig = btn.innerHTML;
+    btn.innerHTML = `${ICONS.check} Already in Kit`;
+    setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    return;
+  }
+
+  // Detect category and dept from text
+  const category = promptToCategory(p.text);
+  const dept     = promptToDept(p.text);
+
+  custom.unshift({
+    id: Date.now(),
+    _savedId: savedId,
+    title: p.title.replace(/^(Optimized:|Action Plan:|Expert Perspective:|Mistakes to Avoid:|Ready-to-Use Template:|Gap Analysis:|Research & Understand:)\s*/i, '').slice(0, 80),
+    prompt: p.text,
+    category,
+    departments: dept === 'all' ? ['all'] : [dept],
+    labels: [],
+    tool: 'studio',
+    useCase: null,
+  });
+  localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom));
+
+  const orig = btn.innerHTML;
+  btn.innerHTML = `${ICONS.check} Added to Prompt Kit`;
+  btn.disabled = true;
+  setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2200);
+}
+
+const CAT_KEYWORDS = {
+  writing:  ['email','write','draft','letter','communicate','message','report','summary','narrative','copy','document'],
+  analysis: ['analyse','analyze','research','data','trend','market','forecast','insight','study','investigate'],
+  client:   ['client','proposal','pitch','presentation','tender','customer','stakeholder','meeting','relationship'],
+  data:     ['financial','finance','model','cashflow','budget','kpi','metric','dashboard','number','revenue'],
+  visual:   ['slide','deck','visual','chart','infographic','design'],
+};
+function promptToCategory(text) {
+  const lower = text.toLowerCase();
+  let best = 'writing', bestScore = 0;
+  for (const [cat, kws] of Object.entries(CAT_KEYWORDS)) {
+    const score = kws.filter(k => lower.includes(k)).length;
+    if (score > bestScore) { bestScore = score; best = cat; }
+  }
+  return best;
+}
+function promptToDept(text) {
+  const role = (typeof detectRole === 'function') ? detectRole(text) : '';
+  if (role.includes('investment') || role.includes('capital')) return 'capital-markets';
+  if (role.includes('leasing'))            return 'leasing';
+  if (role.includes('valuation'))          return 'valuation';
+  if (role.includes('property management'))return 'property-management';
+  if (role.includes('retail'))             return 'retail-advisory';
+  if (role.includes('research'))           return 'research';
+  if (role.includes('corporate') || role.includes('career')) return 'corporate';
+  return 'all';
+}
+
 // ─── SAVED PANEL ───────────────────────────────────────────────────────────
 const SRC_META = {
-  catalogue: { label: 'Prompt Kit', cls: 'tool-copilot' },
-  optimizer: { label: 'Optimizer',  cls: 'tool-claude'  },
-  generator: { label: 'Generator',  cls: 'tool-ellis'   },
+  optimizer: { label: 'Optimizer', cls: 'tool-claude' },
+  generator: { label: 'Generator', cls: 'tool-ellis'  },
 };
 
-let _dragSavedId = null;
-
 function renderSavedPanel() {
-  const all  = getSaved();
+  const all       = getSaved().filter(p => p.source !== 'catalogue');
   const container = document.getElementById('saved-panel-content');
   if (!container) return;
 
@@ -404,165 +472,53 @@ function renderSavedPanel() {
       <div class="saved-empty">
         <div class="saved-empty-icon">${ICONS.bookmark}</div>
         <h3>No saved prompts yet</h3>
-        <p>Save prompts from the catalogue, Optimizer, or Generator — they'll appear here.</p>
+        <p>Optimized or generated prompts you save will appear here. Star prompts from the Prompt Kit to access them in the Starred tab.</p>
       </div>`;
     return;
   }
 
-  const myPrompts  = all.filter(p => p.source !== 'catalogue');
-  const catPrompts = all.filter(p => p.source === 'catalogue');
-
-  // group catalogue prompts by dept, sort each group by category
-  const byDept = {};
-  catPrompts.forEach(p => {
-    const key = p.dept || 'general';
-    if (!byDept[key]) byDept[key] = [];
-    byDept[key].push(p);
-  });
-  Object.values(byDept).forEach(arr =>
-    arr.sort((a, b) => (a.category || '').localeCompare(b.category || ''))
-  );
-
-  let html = `
+  const cards = all.map(p => buildSavedCard(p)).join('');
+  container.innerHTML = `
     <div class="saved-header-row">
       <span class="saved-count">${all.length} saved prompt${all.length !== 1 ? 's' : ''}</span>
       <button class="saved-clear-btn" onclick="clearAllSaved()">Clear all</button>
-    </div>`;
-
-  // My Prompts section (optimizer + generator — draggable)
-  if (myPrompts.length) {
-    html += buildSavedSection('my-prompts', 'My Prompts', myPrompts, true);
-  }
-
-  // Department sections in DEPARTMENTS order
-  if (typeof DEPARTMENTS !== 'undefined') {
-    DEPARTMENTS.filter(d => d.id !== 'all').forEach(dept => {
-      if (byDept[dept.id]?.length) {
-        html += buildSavedSection(dept.id, dept.name, byDept[dept.id], false);
-      }
-    });
-  }
-  // Cross-dept prompts — split by category so they're meaningfully organised
-  if (byDept['general']?.length) {
-    const byCategory = {};
-    byDept['general'].forEach(p => {
-      const catId = p.category || 'uncategorised';
-      if (!byCategory[catId]) byCategory[catId] = [];
-      byCategory[catId].push(p);
-    });
-    // Render in CATEGORIES order, then anything uncategorised last
-    const catOrder = (typeof CATEGORIES !== 'undefined')
-      ? CATEGORIES.map(c => c.id) : [];
-    const allCatIds = [...new Set([...catOrder, ...Object.keys(byCategory)])];
-    allCatIds.forEach(catId => {
-      if (!byCategory[catId]?.length) return;
-      const catName = (typeof CATEGORIES !== 'undefined')
-        ? (CATEGORIES.find(c => c.id === catId)?.name || 'Other')
-        : catId;
-      html += buildSavedSection(`general-${catId}`, catName, byCategory[catId], false);
-    });
-  }
-
-  container.innerHTML = html;
+    </div>
+    <div class="saved-flat-grid">${cards}</div>`;
 }
 
-function buildSavedSection(deptId, deptName, prompts, isMyPrompts) {
-  const dropAttrs = isMyPrompts ? '' :
-    `ondragover="savedDragOver(event)" ondragleave="savedDragLeave(event)" ondrop="savedDrop(event,'${deptId}')"`;
-
-  const cards = prompts.map(p => buildSavedCard(p, isMyPrompts)).join('');
-
-  const dropHint = isMyPrompts ? '' :
-    `<div class="saved-drop-hint">
-       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-       Drop My Prompts here
-     </div>`;
-
-  return `
-    <div class="saved-section">
-      <div class="saved-section-hdr">
-        <span class="saved-section-title">${deptName}</span>
-        <span class="saved-section-badge">${prompts.length}</span>
-        ${isMyPrompts ? '<span class="saved-section-tip">Drag cards into a department below</span>' : ''}
-      </div>
-      <div class="saved-section-grid${isMyPrompts ? '' : ' saved-drop-zone'}" ${dropAttrs}>
-        ${cards}
-        ${dropHint}
-      </div>
-    </div>`;
-}
-
-function buildSavedCard(p, draggable) {
-  const meta    = SRC_META[p.source] || SRC_META.catalogue;
-  const preview = p.text.replace(/\n/g, ' ').slice(0, 100) + '…';
+function buildSavedCard(p) {
+  const meta    = SRC_META[p.source] || { label: p.source, cls: '' };
+  const preview = p.text.replace(/\n/g, ' ').slice(0, 105) + '…';
   const date    = new Date(p.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
   const catName = p.category
-    ? (typeof CATEGORIES !== 'undefined' ? CATEGORIES.find(c => c.id === p.category)?.name : null) || p.category
+    ? (typeof CATEGORIES !== 'undefined' ? CATEGORIES.find(c => c.id === p.category)?.name : null) || null
+    : null;
+  const deptName = p.dept && p.dept !== 'my-prompts'
+    ? (typeof DEPARTMENTS !== 'undefined' ? DEPARTMENTS.find(d => d.id === p.dept)?.name : null) || null
     : null;
 
-  // Catalogue cards open the full Prompt Kit modal on click
-  const isKitCard   = p.source === 'catalogue' && p.sourceId;
-  const cardClick   = isKitCard ? `onclick="openModal(${p.sourceId})"` : '';
-  const cardCursor  = isKitCard ? ' saved-card-clickable' : '';
+  const alreadyAdded = getCustomPrompts().some(c => c._savedId === p.id);
 
   return `
-    <div class="saved-card${draggable ? ' saved-card-draggable' : ''}${cardCursor}"
-      ${draggable ? `draggable="true" ondragstart="savedDragStart(event,${p.id})" ondragend="savedDragEnd(event)"` : ''}
-      ${cardClick}>
-      ${draggable ? `<div class="saved-drag-handle" title="Drag to a department">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
-          <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
-          <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
-          <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
-        </svg>
-      </div>` : ''}
+    <div class="saved-card">
       <div class="saved-card-hdr">
         <div class="saved-card-title">${esc(p.title)}</div>
         <div class="saved-card-meta-row">
           <span class="tool-badge ${meta.cls}">${meta.label}</span>
-          ${catName ? `<span class="saved-cat-tag">${catName}</span>` : ''}
+          ${deptName ? `<span class="saved-cat-tag">${deptName}</span>` : ''}
+          ${catName  ? `<span class="saved-cat-tag">${catName}</span>` : ''}
           <span class="saved-card-date">${date}</span>
         </div>
       </div>
       <div class="saved-card-preview">${esc(preview)}</div>
       <div class="saved-card-actions">
-        <button class="btn-card-copy" onclick="event.stopPropagation();copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
-        <button class="btn-card-view saved-del-btn" onclick="event.stopPropagation();deleteSaved(${p.id})">${ICONS.bookmark} Unsave</button>
+        <button class="btn-card-copy" onclick="copySavedItem(this,${p.id})">${ICONS.copy} Copy</button>
+        <button class="saved-add-kit-btn${alreadyAdded ? ' added' : ''}" onclick="addToPromptKit(${p.id},this)">
+          ${alreadyAdded ? `${ICONS.check} In Prompt Kit` : `${ICONS.arrow} Add to Prompt Kit`}
+        </button>
+        <button class="btn-card-view saved-del-btn" onclick="deleteSaved(${p.id})">${ICONS.x} Delete</button>
       </div>
     </div>`;
-}
-
-// ─── DRAG AND DROP ─────────────────────────────────────────────────────────
-function savedDragStart(e, id) {
-  _dragSavedId = id;
-  e.dataTransfer.effectAllowed = 'move';
-  e.currentTarget.classList.add('dragging');
-}
-function savedDragEnd(e) {
-  e.currentTarget.classList.remove('dragging');
-}
-function savedDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  e.currentTarget.classList.add('drag-over');
-}
-function savedDragLeave(e) {
-  if (!e.currentTarget.contains(e.relatedTarget)) {
-    e.currentTarget.classList.remove('drag-over');
-  }
-}
-function savedDrop(e, targetDept) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  if (!_dragSavedId) return;
-  const arr    = getSaved();
-  const record = arr.find(p => p.id === _dragSavedId);
-  if (record && record.source !== 'catalogue') {
-    record.dept = targetDept;
-    setSaved(arr);
-    renderSavedPanel();
-  }
-  _dragSavedId = null;
 }
 
 function copySavedItem(btn, id) {
@@ -578,22 +534,15 @@ function clearAllSaved() {
 
 // ─── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Migrate any old saved records that have dept:'general' but a specific sourceId
-  // (saved before the dept-detection fix). Re-assign to the prompt's first specific dept.
-  const arr = getSaved();
-  let changed = false;
-  arr.forEach(rec => {
-    if (rec.source === 'catalogue' && rec.dept === 'general' && rec.sourceId) {
-      const p = (typeof PROMPTS !== 'undefined') && PROMPTS.find(x => x.id === rec.sourceId);
-      if (p) {
-        const specific = (p.departments || []).filter(d => d !== 'all');
-        if (specific.length > 0) { rec.dept = specific[0]; changed = true; }
-        // Always ensure category is set so category-grouping works
-        if (!rec.category && p.category) { rec.category = p.category; changed = true; }
-      }
-    }
-  });
-  if (changed) setSaved(arr);
+  // Migrate old catalogue saves → starred prompts, then remove from saved list
+  const savedArr = getSaved();
+  const catSaves = savedArr.filter(p => p.source === 'catalogue' && p.sourceId);
+  if (catSaves.length) {
+    const starred = (typeof getStarred === 'function') ? getStarred() : [];
+    catSaves.forEach(p => { if (!starred.includes(p.sourceId)) starred.unshift(p.sourceId); });
+    if (typeof setStarred === 'function') setStarred(starred);
+    setSaved(savedArr.filter(p => p.source !== 'catalogue'));
+  }
 
   _updateSavedBadge();
 

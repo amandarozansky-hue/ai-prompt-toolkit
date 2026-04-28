@@ -17,7 +17,8 @@ const ICONS = {
   eye:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
   x:          `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
   arrow:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`,
-  star:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  star:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  'star-fill': `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
   bookmark:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
   'bookmark-fill': `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
   sparkle:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>`,
@@ -47,10 +48,35 @@ function labelHTML(key) {
 }
 
 const TOOL_META = {
-  copilot: { label: 'Copilot',  cls: 'tool-copilot' },
-  ellis:   { label: 'Ellis AI', cls: 'tool-ellis'   },
-  claude:  { label: 'Claude',   cls: 'tool-claude'  },
+  copilot: { label: 'Copilot',       cls: 'tool-copilot' },
+  ellis:   { label: 'Ellis AI',      cls: 'tool-ellis'   },
+  claude:  { label: 'Claude',        cls: 'tool-claude'  },
+  studio:  { label: 'Prompt Studio', cls: 'tool-studio'  },
 };
+
+// ─── STARRED PROMPTS ─────────────────────────────────────────────────────
+const STARS_KEY = 'ai-toolkit-starred';
+function getStarred() {
+  try { return JSON.parse(localStorage.getItem(STARS_KEY) || '[]'); } catch { return []; }
+}
+function setStarred(arr) { localStorage.setItem(STARS_KEY, JSON.stringify(arr)); }
+function isStarred(id) { return getStarred().includes(id); }
+function toggleStar(id) {
+  let arr = getStarred();
+  arr = arr.includes(id) ? arr.filter(x => x !== id) : [id, ...arr];
+  setStarred(arr);
+  // update card star button in-place
+  const btn = document.querySelector(`[data-star-id="${id}"]`);
+  if (btn) {
+    const starred = arr.includes(id);
+    btn.classList.toggle('starred', starred);
+    btn.innerHTML = starred ? ICONS['star-fill'] : ICONS.star;
+    btn.title = starred ? 'Unstar' : 'Star';
+  }
+  // refresh grid if we're in starred view
+  if (state.dept === 'starred') renderGrid();
+  else renderDeptTabs(); // update count badge
+}
 
 function toolBadge(tool) {
   const t = TOOL_META[tool];
@@ -66,9 +92,25 @@ function copyText(text, btn, origHTML) {
   });
 }
 
+function allPrompts() {
+  const custom = typeof getCustomPrompts === 'function' ? getCustomPrompts() : [];
+  return [...custom, ...PROMPTS];
+}
+
 function filtered() {
-  return PROMPTS.filter(p => {
-    const dOk = state.dept === 'all' || p.departments.includes('all') || p.departments.includes(state.dept);
+  const base = allPrompts();
+  if (state.dept === 'starred') {
+    const starred = getStarred();
+    return base.filter(p => {
+      if (!starred.includes(p.id)) return false;
+      const cOk = state.cat === 'all' || p.category === state.cat;
+      const q   = state.search.toLowerCase();
+      const sOk = !q || p.title.toLowerCase().includes(q) || p.prompt.toLowerCase().includes(q);
+      return cOk && sOk;
+    });
+  }
+  return base.filter(p => {
+    const dOk = state.dept === 'all' || (p.departments || []).includes('all') || (p.departments || []).includes(state.dept);
     const cOk = state.cat  === 'all' || p.category === state.cat;
     const q   = state.search.toLowerCase();
     const sOk = !q || p.title.toLowerCase().includes(q) ||
@@ -80,10 +122,22 @@ function filtered() {
 
 // ─── RENDER: DEPT TABS ───────────────────────────────────────────────────
 function renderDeptTabs() {
-  document.getElementById('dept-tabs').innerHTML = DEPARTMENTS.map(d => `
+  const starCount = getStarred().length;
+  const starredBtn = `
+    <button class="dept-tab${state.dept === 'starred' ? ' active' : ''}" onclick="setDept('starred')">
+      ${state.dept === 'starred' ? ICONS['star-fill'] : ICONS.star}
+      Starred${starCount ? ` <span class="dept-star-count">${starCount}</span>` : ''}
+    </button>`;
+
+  const deptBtns = DEPARTMENTS.map(d => `
     <button class="dept-tab${d.id === state.dept ? ' active' : ''}" onclick="setDept('${d.id}')">
       ${ICONS[DEPT_ICONS[d.id]] || ''} ${d.name}
     </button>`).join('');
+
+  // Insert starred after "All Departments"
+  const allBtn  = deptBtns.slice(0, deptBtns.indexOf('</button>') + 9);
+  const restBtn = deptBtns.slice(deptBtns.indexOf('</button>') + 9);
+  document.getElementById('dept-tabs').innerHTML = allBtn + starredBtn + restBtn;
 }
 
 // ─── RENDER: CAT PILLS ───────────────────────────────────────────────────
@@ -122,7 +176,7 @@ function renderGrid() {
     const catName   = CATEGORIES.find(c => c.id === p.category)?.name || '';
     const labels    = p.labels.map(labelHTML).join('');
     const preview   = p.prompt.replace(/\n/g,' ').slice(0, 130) + '…';
-    const isSaved   = typeof isPromptSaved === 'function' && isPromptSaved(p.id);
+    const isSaved   = isStarred(p.id);
     const impact    = p.useCase ? `
       <div class="card-impact">
         ${ICONS.star}
@@ -144,8 +198,8 @@ function renderGrid() {
           <button class="btn-card-copy" data-id="${p.id}" onclick="handleCardCopy(event,${p.id})">
             ${ICONS.copy} Copy Prompt
           </button>
-          <button class="btn-card-save${isSaved ? ' saved' : ''}" data-save-id="${p.id}" onclick="saveFromCatalogue(${p.id})" title="${isSaved ? 'Unsave' : 'Save prompt'}">
-            ${isSaved ? ICONS['bookmark-fill'] : ICONS.bookmark}
+          <button class="btn-card-save${isSaved ? ' saved' : ''}" data-star-id="${p.id}" onclick="toggleStar(${p.id})" title="${isSaved ? 'Unstar' : 'Star'}">
+            ${isSaved ? ICONS['star-fill'] : ICONS.star}
           </button>
           <button class="btn-card-view" onclick="openModal(${p.id})">
             ${ICONS.eye} View
@@ -263,8 +317,8 @@ function buildStandardModal(p, id) {
           <button class="modal-btn-copy" id="modal-copy-btn" onclick="handleModalCopy(${id})">
             ${ICONS.copy} Copy Prompt
           </button>
-          <button class="modal-btn-save${typeof isPromptSaved === 'function' && isPromptSaved(id) ? ' modal-btn-saved' : ''}" id="modal-save-btn" data-prompt-id="${id}" onclick="saveFromCatalogue(${id});updateModalSaveState(${id})">
-            ${typeof isPromptSaved === 'function' && isPromptSaved(id) ? ICONS['bookmark-fill'] + ' Saved' : ICONS.bookmark + ' Save'}
+          <button class="modal-btn-save${isStarred(id) ? ' modal-btn-saved' : ''}" id="modal-save-btn" onclick="toggleStar(${id});updateModalStarState(${id})">
+            ${isStarred(id) ? ICONS['star-fill'] + ' Starred' : ICONS.star + ' Star'}
           </button>
         </div>
       </div>
@@ -407,12 +461,12 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-function updateModalSaveState(id) {
+function updateModalStarState(id) {
   const btn = document.getElementById('modal-save-btn');
   if (!btn) return;
-  const saved = typeof isPromptSaved === 'function' && isPromptSaved(id);
-  btn.className = 'modal-btn-save' + (saved ? ' modal-btn-saved' : '');
-  btn.innerHTML = saved ? `${ICONS['bookmark-fill']} Saved` : `${ICONS.bookmark} Save`;
+  const starred = isStarred(id);
+  btn.className = 'modal-btn-save' + (starred ? ' modal-btn-saved' : '');
+  btn.innerHTML = starred ? `${ICONS['star-fill']} Starred` : `${ICONS.star} Star`;
 }
 
 function handleModalCopy(id) {
