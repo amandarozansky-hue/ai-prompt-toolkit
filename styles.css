@@ -1517,15 +1517,14 @@ footer {
    ══════════════════════════════════════════════════════════════ */
 #ai-tools { background: var(--ink-05); }
 
-.tools-shell {
-  background: var(--white);
+/* Outer wrapper: provides the border + shadow; NO overflow so sticky works */
+.tools-outer {
   border: 1.5px solid var(--ink-10);
   border-radius: var(--r-xl);
-  /* no overflow — required for sticky tab strip to work */
   box-shadow: var(--shadow);
 }
 
-/* ─── Tab strip ────────────────────────────────────────── */
+/* Tab strip: sticky child of tools-outer (no overflow ancestor) */
 .tools-tab-strip {
   display: flex;
   align-items: flex-end;
@@ -1534,12 +1533,17 @@ footer {
   padding: .625rem 1.25rem 0;
   gap: .25rem;
   overflow-x: auto;
-  /* sticky below the nav */
   position: sticky;
   top: 60px;
   z-index: 100;
-  /* match shell's top corners */
   border-radius: calc(var(--r-xl) - 1.5px) calc(var(--r-xl) - 1.5px) 0 0;
+}
+
+/* Inner panel shell: overflow:hidden is fine; tab strip is a sibling */
+.tools-shell {
+  background: var(--white);
+  border-radius: 0 0 calc(var(--r-xl) - 1.5px) calc(var(--r-xl) - 1.5px);
+  overflow: hidden;
 }
 .tools-tab {
   display: inline-flex;
